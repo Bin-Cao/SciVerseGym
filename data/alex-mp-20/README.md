@@ -1,0 +1,1 @@
+Download the `all.parquet` file from the Releases page and copy it to the folder.
