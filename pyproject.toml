@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sciverse-gym"
+version = "0.1.0"
+description = "OpenAI Gymnasium environments for crystal structure discovery."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "Dr.Bin Cao" }]
+dependencies = [
+  "ase>=3.24,<3.27",
+  "numpy>=1.23",
+  "pandas>=2.0",
+  "pyarrow>=12.0",
+  "phonopy>=2.20",
+  "scipy>=1.10",
+  "torch>=2.0",
+  "torch-geometric>=2.3",
+  "gymnasium>=0.29"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+mlff = ["mattersim", "orb-models", "sevenn"]
+mattersim = ["mattersim"]
+orb = ["orb-models"]
+sevennet = ["sevenn"]
+
+[project.urls]
+Homepage = "https://github.com/Bin-Cao/SciVerseGym"
+
+[tool.setuptools.packages.find]
+include = ["sciverse_gym*"]
+
+[tool.setuptools.package-data]
+sciverse_gym = ["mlff_checkpoints/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

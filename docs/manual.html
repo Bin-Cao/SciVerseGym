@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SciVerseGym Bilingual Manual</title>
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --paper: #ffffff;
+      --ink: #17202a;
+      --muted: #5c6670;
+      --line: #d9dee5;
+      --soft: #eef4f8;
+      --accent: #0f766e;
+      --code-bg: #101820;
+      --code-ink: #edf2f7;
+      --warn-bg: #fff7ed;
+      --warn-line: #fed7aa;
+      --ok-bg: #ecfdf5;
+      --ok-line: #a7f3d0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.65;
+    }
+
+    body.lang-en [data-lang="zh"],
+    body.lang-zh [data-lang="en"] { display: none !important; }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 286px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      border-right: 1px solid var(--line);
+      background: #fbfcfd;
+      padding: 24px 18px;
+    }
+
+    aside h2 { margin: 0 0 14px; font-size: 18px; letter-spacing: 0; }
+    nav a {
+      display: block;
+      padding: 7px 10px;
+      border-radius: 6px;
+      color: #2d3748;
+      font-size: 14px;
+    }
+    nav a:hover { background: var(--soft); text-decoration: none; }
+
+    main {
+      max-width: 1180px;
+      width: 100%;
+      padding: 44px 52px 80px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 28px;
+      margin-bottom: 34px;
+    }
+
+    h1 { margin: 0 0 12px; font-size: 38px; line-height: 1.2; letter-spacing: 0; }
+    h2 {
+      margin: 44px 0 14px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      font-size: 27px;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+    h3 { margin: 28px 0 10px; font-size: 20px; letter-spacing: 0; }
+    h4 { margin: 22px 0 8px; font-size: 16px; letter-spacing: 0; }
+    p { margin: 10px 0; }
+    ul, ol { padding-left: 22px; }
+    li { margin: 6px 0; }
+
+    .lead { max-width: 880px; color: var(--muted); font-size: 18px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      color: #334155;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--paper);
+    }
+    .card h3, .card h4 { margin-top: 0; }
+
+    .note, .warning, .success {
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 16px 0;
+    }
+    .note { border: 1px solid #bfdbfe; background: #eff6ff; }
+    .warning { border: 1px solid var(--warn-line); background: var(--warn-bg); }
+    .success { border: 1px solid var(--ok-line); background: var(--ok-bg); }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: #eef2f7;
+      color: #102a43;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+    }
+    pre {
+      overflow: auto;
+      border-radius: 8px;
+      background: var(--code-bg);
+      color: var(--code-ink);
+      padding: 16px;
+      line-height: 1.55;
+      font-size: 13px;
+    }
+    pre code { padding: 0; background: transparent; color: inherit; font-size: inherit; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 22px;
+      background: var(--paper);
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      vertical-align: top;
+      text-align: left;
+    }
+    th { background: #f1f5f9; font-weight: 650; }
+
+    .language-toggle {
+      position: fixed;
+      right: 18px;
+      top: 16px;
+      z-index: 20;
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+    }
+    .language-toggle button {
+      min-width: 52px;
+      border: 0;
+      border-radius: 6px;
+      padding: 7px 10px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 650;
+      cursor: pointer;
+    }
+    body.lang-en .language-toggle [data-set-lang="en"],
+    body.lang-zh .language-toggle [data-set-lang="zh"] {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    footer {
+      margin-top: 56px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 920px) {
+      .layout { display: block; }
+      aside {
+        position: static;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+      }
+      main { padding: 28px 18px 56px; }
+      h1 { font-size: 30px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="lang-en">
+  <div class="language-toggle" aria-label="Language switch">
+    <button type="button" data-set-lang="en">EN</button>
+    <button type="button" data-set-lang="zh">中文</button>
+  </div>
+
+  <div class="layout">
+    <aside>
+      <h2><span data-lang="en">SciVerseGym Manual</span><span data-lang="zh">SciVerseGym 说明书</span></h2>
+      <nav aria-label="Table of contents">
+        <a href="#overview"><span data-lang="en">1. Overview</span><span data-lang="zh">1. 项目概览</span></a>
+        <a href="#install"><span data-lang="en">2. Install</span><span data-lang="zh">2. 安装</span></a>
+        <a href="#jupyter"><span data-lang="en">3. Jupyter From Zero</span><span data-lang="zh">3. Jupyter 从 0 开始</span></a>
+        <a href="#environment"><span data-lang="en">4. Environment API</span><span data-lang="zh">4. 环境接口</span></a>
+        <a href="#actions"><span data-lang="en">5. Actions</span><span data-lang="zh">5. Action 结构</span></a>
+        <a href="#atomic-table"><span data-lang="en">6. Atomic Numbers</span><span data-lang="zh">6. 原子序数表</span></a>
+        <a href="#state"><span data-lang="en">7. State and Info</span><span data-lang="zh">7. State 与 Info</span></a>
+        <a href="#mlff"><span data-lang="en">8. MLFF</span><span data-lang="zh">8. MLFF 配置</span></a>
+        <a href="#reward"><span data-lang="en">9. Reward</span><span data-lang="zh">9. Reward 机制</span></a>
+        <a href="#bo-rl"><span data-lang="en">10. BO and RL</span><span data-lang="zh">10. BO 和 RL</span></a>
+        <a href="#physics"><span data-lang="en">11. FE, Hull, Phonons</span><span data-lang="zh">11. 形成能、Hull、声子</span></a>
+        <a href="#dataset"><span data-lang="en">12. Dataset</span><span data-lang="zh">12. 数据集</span></a>
+        <a href="#api"><span data-lang="en">13. API Reference</span><span data-lang="zh">13. API 速查</span></a>
+        <a href="#troubleshooting"><span data-lang="en">14. Troubleshooting</span><span data-lang="zh">14. 常见问题</span></a>
+      </nav>
+    </aside>
+
+    <main>
+      <header>
+        <h1><span data-lang="en">SciVerseGym User Manual</span><span data-lang="zh">SciVerseGym 用户说明书</span></h1>
+        <p class="lead" data-lang="en">
+          English is the primary view. The Chinese view contains the same sections, examples, formulas,
+          tables, and operational guidance. Use this manual to configure MLFF-backed crystal discovery,
+          submit structured actions, train simple BO/RL agents, and interpret formation energy, convex hull,
+          phonons, and rewards.
+        </p>
+        <p class="lead" data-lang="zh">
+          本手册以英文为主，中文视图包含相同章节、示例、公式、表格和操作说明。你可以用它配置
+          MLFF 晶体发现环境，提交结构化 action，训练简单 BO/RL agent，并理解形成能、convex hull、
+          声子和 reward 返回值。
+        </p>
+        <div class="meta">
+          <span class="pill">CrystalDiscovery-v0</span>
+          <span class="pill">Default MLFF: sevennet</span>
+          <span class="pill">Gymnasium API</span>
+          <span class="pill">Bilingual manual</span>
+        </div>
+      </header>
+
+      <section id="overview">
+        <h2><span data-lang="en">1. Overview</span><span data-lang="zh">1. 项目概览</span></h2>
+        <p data-lang="en">
+          SciVerseGym is a Gymnasium-style environment for materials discovery. Agents do not emit raw CIF files.
+          They submit structured crystal-edit actions. The environment applies the edit to the current ASE
+          <code>Atoms</code>, evaluates the new structure with the configured MLFF or custom calculator, computes
+          reward, and returns a standard transition.
+        </p>
+        <p data-lang="zh">
+          SciVerseGym 是一个 Gymnasium 风格的材料发现环境。智能体不需要直接输出 CIF 文件，而是提交
+          结构化晶体编辑 action。环境会把 action 应用到当前 ASE <code>Atoms</code>，再用配置好的
+          MLFF 或自定义 calculator 评估新结构，计算 reward，并返回标准 transition。
+        </p>
+        <pre><code class="language-python">obs, reward, terminated, truncated, info = env.step(action)</code></pre>
+        <div class="warning">
+          <span data-lang="en">Recommended usage explicitly passes <code>mlff_model="sevennet"</code> or another supported MLFF inside <code>gym.make(...)</code>. Use <code>calculator=...</code> only for custom or reference-backed calculators.</span>
+          <span data-lang="zh">推荐用法是在 <code>gym.make(...)</code> 中显式传入 <code>mlff_model="sevennet"</code> 或其他支持的 MLFF。只有自定义 calculator 或带 reference 的 calculator 才使用 <code>calculator=...</code>。</span>
+        </div>
+      </section>
+
+      <section id="install">
+        <h2><span data-lang="en">2. Install</span><span data-lang="zh">2. 安装</span></h2>
+        <p data-lang="en">Install the repository in editable mode with development tools:</p>
+        <p data-lang="zh">以 editable 模式安装仓库和开发工具：</p>
+        <pre><code class="language-bash">python -m pip install -e ".[dev]"</code></pre>
+        <p data-lang="en">Install built-in MLFF adapters and their optional dependencies:</p>
+        <p data-lang="zh">安装内置 MLFF 适配器和可选依赖：</p>
+        <pre><code class="language-bash">python -m pip install -e ".[dev,mlff]"</code></pre>
+      </section>
+
+      <section id="jupyter">
+        <h2><span data-lang="en">3. Jupyter From Zero</span><span data-lang="zh">3. Jupyter 从 0 开始</span></h2>
+        <h3><span data-lang="en">Cell 1: imports and paths</span><span data-lang="zh">Cell 1：导入和路径</span></h3>
+        <pre><code class="language-python">from pathlib import Path
+import gymnasium as gym
+import numpy as np
+
+import sciverse_gym
+from sciverse_gym.benchmarks.bo_baselines.simple_bo import (
+    candidate_actions,
+    choose_action,
+    featurize,
+)
+
+DATA_PATH = Path("data/alex-mp-20")
+print("parquet files:", [p.name for p in DATA_PATH.glob("*.parquet")])</code></pre>
+        <h3><span data-lang="en">Cell 2: create an MLFF-backed environment</span><span data-lang="zh">Cell 2：创建 MLFF 环境</span></h3>
+        <pre><code class="language-python">env = gym.make(
+    "CrystalDiscovery-v0",
+    data_path=str(DATA_PATH),
+    mlff_model="sevennet",
+    mlff_relax=False,
+    max_steps=5,
+    max_dataset_rows=20,
+)
+
+obs, info = env.reset(seed=0, options={"index": 0})
+print(env.render())
+print(info)</code></pre>
+        <h3><span data-lang="en">Cell 3: submit one action and read the new state</span><span data-lang="zh">Cell 3：提交 action 并读取新 state</span></h3>
+        <pre><code class="language-python">action = {"action_type": 0, "site": 0, "element": 28}  # 28 = Ni
+old_formula = obs["structure"].get_chemical_formula()
+
+obs, reward, terminated, truncated, info = env.step(action)
+
+print("old formula:", old_formula)
+print("submitted action:", action)
+print("new formula:", info["formula"])
+print("new energy:", float(obs["energy"]))
+print("reward:", reward)
+print("backend:", info["backend"])
+print("step:", obs["step"], "budget_left:", obs["budget_left"])</code></pre>
+      </section>
+
+      <section id="environment">
+        <h2><span data-lang="en">4. Environment API</span><span data-lang="zh">4. 环境接口</span></h2>
+        <pre><code class="language-python">env = gym.make("CrystalDiscovery-v0", ...)</code></pre>
+        <table>
+          <thead>
+            <tr>
+              <th><span data-lang="en">Parameter</span><span data-lang="zh">参数</span></th>
+              <th><span data-lang="en">Default</span><span data-lang="zh">默认值</span></th>
+              <th><span data-lang="en">Description</span><span data-lang="zh">说明</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>data_path</code></td><td><code>"data/alex-mp-20"</code></td><td><span data-lang="en">ALEX-MP-20 parquet directory.</span><span data-lang="zh">ALEX-MP-20 parquet 数据目录。</span></td></tr>
+            <tr><td><code>split</code></td><td><code>"all"</code></td><td><span data-lang="en">Dataset split. The default reads the merged table.</span><span data-lang="zh">数据 split。默认读取合并表。</span></td></tr>
+            <tr><td><code>max_steps</code></td><td><code>100</code></td><td><span data-lang="en">Episode edit budget. When reached, <code>truncated=True</code>.</span><span data-lang="zh">每个 episode 的编辑预算；达到后 <code>truncated=True</code>。</span></td></tr>
+            <tr><td><code>calculator</code></td><td><code>None</code></td><td><span data-lang="en">Custom evaluator. Mutually exclusive with <code>mlff_model</code>.</span><span data-lang="zh">自定义 evaluator，不能和 <code>mlff_model</code> 同时传。</span></td></tr>
+            <tr><td><code>mlff_model</code></td><td><span data-lang="en">explicitly recommended</span><span data-lang="zh">推荐显式传入</span></td><td><span data-lang="en">One of <code>sevennet</code>, <code>mattersim</code>, or <code>orb</code>.</span><span data-lang="zh">可选 <code>sevennet</code>、<code>mattersim</code>、<code>orb</code>。</span></td></tr>
+            <tr><td><code>mlff_relax</code></td><td><code>False</code></td><td><span data-lang="en">Relax atomic positions before evaluation.</span><span data-lang="zh">评估前是否优化原子位置。</span></td></tr>
+            <tr><td><code>mlff_relax_cell</code></td><td><code>False</code></td><td><span data-lang="en">Allow lattice-cell relaxation when relaxation is enabled.</span><span data-lang="zh">开启 relaxation 时是否允许晶胞变化。</span></td></tr>
+            <tr><td><code>mlff_compute_phonons</code></td><td><code>False</code></td><td><span data-lang="en">Compute finite-displacement phonon stability.</span><span data-lang="zh">是否计算有限位移声子稳定性。</span></td></tr>
+            <tr><td><code>mlff_kwargs</code></td><td><code>None</code></td><td><span data-lang="en">Extra options such as <code>relax_fmax</code>, <code>relax_steps</code>, <code>phonon_supercell</code>, <code>phonon_displacement</code>, <code>phonon_mesh</code>, and <code>phonon_stability_tolerance</code>.</span><span data-lang="zh">额外参数，例如 <code>relax_fmax</code>、<code>relax_steps</code>、<code>phonon_supercell</code>、<code>phonon_displacement</code>、<code>phonon_mesh</code>、<code>phonon_stability_tolerance</code>。</span></td></tr>
+            <tr><td><code>max_dataset_rows</code></td><td><code>None</code></td><td><span data-lang="en">Optional row cap for tutorials and small tests.</span><span data-lang="zh">限制数据行数，适合教程和小测试。</span></td></tr>
+            <tr><td><code>dataset</code></td><td><code>None</code></td><td><span data-lang="en">Mounted dataset implementing <code>__len__</code>, <code>get(index)</code>, and <code>sample(rng)</code>.</span><span data-lang="zh">自定义数据集，需要实现 <code>__len__</code>、<code>get(index)</code>、<code>sample(rng)</code>。</span></td></tr>
+          </tbody>
+        </table>
+        <h3><span data-lang="en">Phonon-related <code>mlff_kwargs</code> example</span><span data-lang="zh">声子相关 <code>mlff_kwargs</code> 示例</span></h3>
+        <pre><code class="language-python">env = gym.make(
+    "CrystalDiscovery-v0",
+    data_path="data/alex-mp-20",
+    mlff_model="sevennet",
+    mlff_compute_phonons=True,
+    mlff_kwargs={
+        "phonon_supercell": (2, 2, 2),
+        "phonon_displacement": 0.01,
+        "phonon_mesh": (8, 8, 8),
+        "phonon_stability_tolerance": -0.1,
+    },
+    max_steps=1,
+)</code></pre>
+      </section>
+
+      <section id="actions">
+        <h2><span data-lang="en">5. Actions</span><span data-lang="zh">5. Action 结构</span></h2>
+        <p data-lang="en">Actions are dictionaries. Missing fields use conservative defaults, but explicit fields are recommended.</p>
+        <p data-lang="zh">action 是 dictionary。缺失字段有保守默认值，但推荐显式写清字段。</p>
+        <table>
+          <thead>
+            <tr><th>action_type</th><th><span data-lang="en">Edit</span><span data-lang="zh">动作</span></th><th><span data-lang="en">Fields</span><span data-lang="zh">字段</span></th><th><span data-lang="en">Example</span><span data-lang="zh">示例</span></th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>0</code></td><td><span data-lang="en">Element replacement</span><span data-lang="zh">元素替换</span></td><td><code>site</code>, <code>element</code></td><td><code>{"action_type": 0, "site": 3, "element": 28}</code></td></tr>
+            <tr><td><code>1</code></td><td><span data-lang="en">Lattice perturbation</span><span data-lang="zh">晶格扰动</span></td><td><code>lattice_delta</code></td><td><code>{"action_type": 1, "lattice_delta": [0.05, -0.02, 0.0]}</code></td></tr>
+            <tr><td><code>2</code></td><td><span data-lang="en">Atom displacement</span><span data-lang="zh">原子位移</span></td><td><code>site</code>, <code>atom_delta</code></td><td><code>{"action_type": 2, "site": 5, "atom_delta": [0.02, 0.0, -0.01]}</code></td></tr>
+            <tr><td><code>3</code></td><td><span data-lang="en">Vacancy</span><span data-lang="zh">空位</span></td><td><code>site</code></td><td><code>{"action_type": 3, "site": 2}</code></td></tr>
+            <tr><td><code>4</code></td><td><span data-lang="en">Insertion</span><span data-lang="zh">插入原子</span></td><td><code>element</code>, <code>insert_position</code></td><td><code>{"action_type": 4, "element": 3, "insert_position": [0.25, 0.25, 0.25]}</code></td></tr>
+          </tbody>
+        </table>
+        <ul>
+          <li><span data-lang="en"><code>element</code> is an atomic number clipped to <code>1..94</code>.</span><span data-lang="zh"><code>element</code> 是原子序数，内部裁剪到 <code>1..94</code>。</span></li>
+          <li><span data-lang="en"><code>lattice_delta</code> is clipped to <code>[-0.15, 0.15]</code> per component.</span><span data-lang="zh"><code>lattice_delta</code> 每个分量裁剪到 <code>[-0.15, 0.15]</code>。</span></li>
+          <li><span data-lang="en"><code>atom_delta</code> is clipped to <code>[-0.25, 0.25]</code> per component.</span><span data-lang="zh"><code>atom_delta</code> 每个分量裁剪到 <code>[-0.25, 0.25]</code>。</span></li>
+        </ul>
+      </section>
+
+      <section id="atomic-table">
+        <h2><span data-lang="en">6. Atomic Number Table</span><span data-lang="zh">6. 原子序数表</span></h2>
+        <p data-lang="en">The table is generated from one shared data source, so both languages show the same atomic numbers and symbols.</p>
+        <p data-lang="zh">下表由同一份数据生成，因此中英文显示相同的原子序数和元素符号。</p>
+        <div id="atomic-table-container"></div>
+      </section>
+
+      <section id="state">
+        <h2><span data-lang="en">7. State and Info</span><span data-lang="zh">7. State 与 Info</span></h2>
+        <table>
+          <thead><tr><th><span data-lang="en">Field</span><span data-lang="zh">字段</span></th><th><span data-lang="en">Meaning</span><span data-lang="zh">含义</span></th></tr></thead>
+          <tbody>
+            <tr><td><code>obs["structure"]</code></td><td><span data-lang="en">Current ASE <code>Atoms</code>.</span><span data-lang="zh">当前 ASE <code>Atoms</code>。</span></td></tr>
+            <tr><td><code>obs["graph"]</code></td><td><span data-lang="en">PyG graph when available, otherwise fallback graph data.</span><span data-lang="zh">PyG 可用时为图对象，否则为 fallback 图数据。</span></td></tr>
+            <tr><td><code>obs["energy"]</code></td><td><span data-lang="en">Current total energy from the selected backend.</span><span data-lang="zh">当前后端给出的总能量。</span></td></tr>
+            <tr><td><code>obs["step"]</code></td><td><span data-lang="en">Current environment step.</span><span data-lang="zh">当前环境步数。</span></td></tr>
+            <tr><td><code>obs["budget_left"]</code></td><td><span data-lang="en">Remaining edit budget.</span><span data-lang="zh">剩余编辑预算。</span></td></tr>
+            <tr><td><code>info["formation_energy_per_atom"]</code></td><td><span data-lang="en">Formation energy if same-force-field element references exist; otherwise <code>None</code>.</span><span data-lang="zh">如果存在同力场元素 reference，则为形成能；否则为 <code>None</code>。</span></td></tr>
+            <tr><td><code>info["energy_above_hull"]</code></td><td><span data-lang="en">Energy above convex hull if hull references exist; otherwise <code>None</code>.</span><span data-lang="zh">如果存在 hull reference，则为 hull 上方能量；否则为 <code>None</code>。</span></td></tr>
+            <tr><td><code>info["phonon_stable"]</code></td><td><span data-lang="en">Phonon stability when phonons are enabled; otherwise <code>None</code>.</span><span data-lang="zh">开启声子时返回声子稳定性；否则为 <code>None</code>。</span></td></tr>
+            <tr><td><code>info["bulk_modulus"]</code></td><td><span data-lang="en">Reporting field only. The current default reward does not use it.</span><span data-lang="zh">仅作为返回字段；当前默认 reward 不使用它。</span></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="mlff">
+        <h2><span data-lang="en">8. MLFF</span><span data-lang="zh">8. MLFF 配置</span></h2>
+        <p data-lang="en">Supported built-in backends are <code>sevennet</code>, <code>mattersim</code>, and <code>orb</code>. Examples use <code>sevennet</code>.</p>
+        <p data-lang="zh">内置后端包括 <code>sevennet</code>、<code>mattersim</code> 和 <code>orb</code>。示例使用 <code>sevennet</code>。</p>
+        <pre><code class="language-python">from ase.build import bulk
+from sciverse_gym.calculators import mlff_energy
+
+atoms = bulk("Si", "diamond", a=5.43)
+energy_per_atom = mlff_energy(atoms, model="sevennet", per_atom=True)
+print(energy_per_atom)</code></pre>
+      </section>
+
+      <section id="reward">
+        <h2><span data-lang="en">9. Reward</span><span data-lang="zh">9. Reward 机制</span></h2>
+        <p data-lang="en">The current default reward excludes stiffness and <code>bulk_modulus</code>.</p>
+        <p data-lang="zh">当前默认 reward 不包含 stiffness，也不使用 <code>bulk_modulus</code>。</p>
+        <pre><code class="language-text">reward = 0.80 * stability + 0.10 * abundance_proxy + 0.10 * novelty</code></pre>
+        <table>
+          <thead><tr><th><span data-lang="en">Term</span><span data-lang="zh">项</span></th><th><span data-lang="en">Definition</span><span data-lang="zh">定义</span></th><th><span data-lang="en">Meaning</span><span data-lang="zh">含义</span></th></tr></thead>
+          <tbody>
+            <tr><td><code>stability</code></td><td><code>0</code> if <code>energy_above_hull is None</code>; otherwise <code>1 / (1 + max(Ehull, 0) / 0.1)</code></td><td><span data-lang="en">Lower hull energy scores higher.</span><span data-lang="zh">hull 能量越低，得分越高。</span></td></tr>
+            <tr><td><code>abundance_proxy</code></td><td><code>1 / (1 + mean(atomic_numbers) / 60)</code></td><td><span data-lang="en">Lower average atomic number scores higher.</span><span data-lang="zh">平均原子序数越低，得分越高。</span></td></tr>
+            <tr><td><code>novelty</code></td><td><code>0.25</code> if the formula has not appeared in the episode, else <code>0</code></td><td><span data-lang="en">Encourages new compositions.</span><span data-lang="zh">鼓励探索新组成。</span></td></tr>
+          </tbody>
+        </table>
+        <pre><code class="language-text">Example:
+energy_above_hull = 0.05 eV/atom
+mean_Z = 30
+new formula in this episode
+
+stability = 1 / (1 + 0.05 / 0.1) = 0.6667
+abundance_proxy = 1 / (1 + 30 / 60) = 0.6667
+novelty = 0.25
+reward = 0.80*0.6667 + 0.10*0.6667 + 0.10*0.25 = 0.6250</code></pre>
+      </section>
+
+      <section id="bo-rl">
+        <h2><span data-lang="en">10. BO and RL</span><span data-lang="zh">10. BO 和 RL</span></h2>
+        <h3><span data-lang="en">Run the built-in BO baseline</span><span data-lang="zh">运行内置 BO baseline</span></h3>
+        <pre><code class="language-bash">python -m sciverse_gym.benchmarks.bo_baselines.simple_bo --steps 5 --mlff-model sevennet</code></pre>
+        <h3><span data-lang="en">Minimal BO training loop</span><span data-lang="zh">最小 BO 训练循环</span></h3>
+        <pre><code class="language-python">bo_env = gym.make(
+    "CrystalDiscovery-v0",
+    data_path=str(DATA_PATH),
+    mlff_model="sevennet",
+    mlff_relax=False,
+    max_steps=5,
+    max_dataset_rows=20,
+)
+obs, info = bo_env.reset(seed=1, options={"index": 0})
+rng = np.random.default_rng(1)
+x_train, y_train = [], []
+
+for _ in range(5):
+    actions = candidate_actions(obs)
+    action = choose_action(obs, actions, x_train, y_train, rng, exploration=1.5)
+    old_obs = obs
+    obs, reward, terminated, truncated, info = bo_env.step(action)
+    x_train.append(featurize(old_obs, action))
+    y_train.append(float(reward))
+    if terminated or truncated:
+        break</code></pre>
+        <h3><span data-lang="en">Minimal RL/action-value loop</span><span data-lang="zh">最小 RL/action-value 循环</span></h3>
+        <pre><code class="language-python">def action_key(action):
+    return tuple(sorted((k, tuple(v) if isinstance(v, list) else v) for k, v in action.items()))
+
+q_values = {}
+alpha = 0.3
+rng = np.random.default_rng(2)
+obs, info = env.reset(seed=2, options={"index": 0})
+
+while True:
+    actions = candidate_actions(obs)
+    action = dict(actions[int(rng.integers(len(actions)))])
+    obs, reward, terminated, truncated, info = env.step(action)
+    key = action_key(action)
+    q_values[key] = q_values.get(key, 0.0) + alpha * (float(reward) - q_values.get(key, 0.0))
+    if terminated or truncated:
+        break</code></pre>
+      </section>
+
+      <section id="physics">
+        <h2><span data-lang="en">11. Formation Energy, Convex Hull, and Phonons</span><span data-lang="zh">11. 形成能、Convex Hull 和声子</span></h2>
+        <div class="warning">
+          <span data-lang="en">A force field directly provides total energy and forces. Formation energy is derived only when same-force-field elemental reference chemical potentials are available.</span>
+          <span data-lang="zh">力场直接给出总能量和 forces。只有存在同力场元素 reference chemical potentials 时，才能派生形成能。</span>
+        </div>
+        <pre><code class="language-text">E_form_per_atom = (E_total - sum_i n_i * mu_i) / N</code></pre>
+        <p data-lang="en">Convex hull requires same-force-field hull reference entries. Without them, <code>energy_above_hull=None</code>.</p>
+        <p data-lang="zh">Convex hull 需要同力场 hull reference entries。没有这些 reference 时，<code>energy_above_hull=None</code>。</p>
+        <pre><code class="language-python">from sciverse_gym.calculators import build_alex_mp20_physical_calculator
+
+calculator = build_alex_mp20_physical_calculator(
+    data_path="data/alex-mp-20",
+    model="sevennet",
+    reference_cache_path="data/alex-mp-20/sevennet_reference_hull.json",
+    max_reference_entries=None,
+    relax=True,
+    relax_cell=False,
+    relax_references=False,
+    compute_phonons=False,
+)
+
+env = gym.make(
+    "CrystalDiscovery-v0",
+    data_path="data/alex-mp-20",
+    calculator=calculator,
+)</code></pre>
+        <p data-lang="en">Phonons can be enabled directly through the MLFF path or through the reference-backed calculator. They are expensive because displaced supercells require force evaluations.</p>
+        <p data-lang="zh">声子可以直接通过 MLFF 路径开启，也可以在带 reference 的 calculator 中开启。声子很慢，因为多个有限位移超胞都要计算 forces。</p>
+        <pre><code class="language-python">env = gym.make(
+    "CrystalDiscovery-v0",
+    data_path="data/alex-mp-20",
+    mlff_model="sevennet",
+    mlff_compute_phonons=True,
+    mlff_kwargs={
+        "phonon_supercell": (2, 2, 2),
+        "phonon_mesh": (8, 8, 8),
+        "phonon_displacement": 0.01,
+        "phonon_stability_tolerance": -0.1,
+    },
+    max_steps=1,
+)</code></pre>
+      </section>
+
+      <section id="dataset">
+        <h2><span data-lang="en">12. Dataset</span><span data-lang="zh">12. 数据集</span></h2>
+        <p data-lang="en">The default data directory is <code>data/alex-mp-20</code>. The dataset should return <code>StructureRecord</code> objects with <code>atoms</code>, <code>material_id</code>, and <code>metadata</code>.</p>
+        <p data-lang="zh">默认数据目录是 <code>data/alex-mp-20</code>。数据集应返回包含 <code>atoms</code>、<code>material_id</code>、<code>metadata</code> 的 <code>StructureRecord</code>。</p>
+        <pre><code class="language-python">env = gym.make(
+    "CrystalDiscovery-v0",
+    dataset=my_dataset,
+    mlff_model="sevennet",
+    mlff_relax=False,
+)</code></pre>
+      </section>
+
+      <section id="api">
+        <h2><span data-lang="en">13. API Reference</span><span data-lang="zh">13. API 速查</span></h2>
+        <table>
+          <thead><tr><th>API</th><th><span data-lang="en">Purpose</span><span data-lang="zh">用途</span></th></tr></thead>
+          <tbody>
+            <tr><td><code>CrystalDiscoveryEnv</code></td><td><span data-lang="en">Main Gymnasium environment.</span><span data-lang="zh">主 Gymnasium 环境。</span></td></tr>
+            <tr><td><code>apply_action</code></td><td><span data-lang="en">Apply one structured edit to ASE <code>Atoms</code>.</span><span data-lang="zh">把结构化 action 应用到 ASE <code>Atoms</code>。</span></td></tr>
+            <tr><td><code>mlff_energy</code></td><td><span data-lang="en">Compute total or per-atom MLFF energy.</span><span data-lang="zh">计算总 MLFF 能量或每原子能量。</span></td></tr>
+            <tr><td><code>build_alex_mp20_physical_calculator</code></td><td><span data-lang="en">Build same-force-field FE/hull references.</span><span data-lang="zh">构建同力场 FE/hull reference。</span></td></tr>
+            <tr><td><code>candidate_actions</code></td><td><span data-lang="en">Controlled candidate action set used by BO/RL examples.</span><span data-lang="zh">BO/RL 示例使用的受控候选 action 集。</span></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="troubleshooting">
+        <h2><span data-lang="en">14. Troubleshooting</span><span data-lang="zh">14. 常见问题</span></h2>
+        <ul>
+          <li><span data-lang="en">If <code>energy_above_hull</code> is <code>None</code>, build a same-force-field reference calculator.</span><span data-lang="zh">如果 <code>energy_above_hull</code> 是 <code>None</code>，需要构建同力场 reference calculator。</span></li>
+          <li><span data-lang="en">If <code>formation_energy_per_atom</code> is <code>None</code>, an elemental reference is missing.</span><span data-lang="zh">如果 <code>formation_energy_per_atom</code> 是 <code>None</code>，说明缺少元素 reference。</span></li>
+          <li><span data-lang="en">If raw random actions select unsupported elements, use controlled candidate actions instead of <code>env.action_space.sample()</code>.</span><span data-lang="zh">如果裸随机 action 抽到 MLFF 不支持的元素，请使用受控候选 action，不要直接用 <code>env.action_space.sample()</code>。</span></li>
+          <li><span data-lang="en">If PyG optional extensions warn about ABI mismatch, the fallback graph path may still allow environment loops to run.</span><span data-lang="zh">如果 PyG 可选扩展出现 ABI warning，fallback graph 路径通常仍可让环境循环运行。</span></li>
+        </ul>
+      </section>
+
+      <footer>
+        <p data-lang="en">This manual is bilingual with English as the primary default view. The language switch changes all prose while preserving the same sections and examples.</p>
+        <p data-lang="zh">本手册是中英双语，默认英文为主。语言切换会替换所有说明文字，同时保持相同章节和示例。</p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    const atomicElements = [
+      [1, "H", "Hydrogen", "氢"], [2, "He", "Helium", "氦"], [3, "Li", "Lithium", "锂"], [4, "Be", "Beryllium", "铍"],
+      [5, "B", "Boron", "硼"], [6, "C", "Carbon", "碳"], [7, "N", "Nitrogen", "氮"], [8, "O", "Oxygen", "氧"],
+      [9, "F", "Fluorine", "氟"], [10, "Ne", "Neon", "氖"], [11, "Na", "Sodium", "钠"], [12, "Mg", "Magnesium", "镁"],
+      [13, "Al", "Aluminium", "铝"], [14, "Si", "Silicon", "硅"], [15, "P", "Phosphorus", "磷"], [16, "S", "Sulfur", "硫"],
+      [17, "Cl", "Chlorine", "氯"], [18, "Ar", "Argon", "氩"], [19, "K", "Potassium", "钾"], [20, "Ca", "Calcium", "钙"],
+      [21, "Sc", "Scandium", "钪"], [22, "Ti", "Titanium", "钛"], [23, "V", "Vanadium", "钒"], [24, "Cr", "Chromium", "铬"],
+      [25, "Mn", "Manganese", "锰"], [26, "Fe", "Iron", "铁"], [27, "Co", "Cobalt", "钴"], [28, "Ni", "Nickel", "镍"],
+      [29, "Cu", "Copper", "铜"], [30, "Zn", "Zinc", "锌"], [31, "Ga", "Gallium", "镓"], [32, "Ge", "Germanium", "锗"],
+      [33, "As", "Arsenic", "砷"], [34, "Se", "Selenium", "硒"], [35, "Br", "Bromine", "溴"], [36, "Kr", "Krypton", "氪"],
+      [37, "Rb", "Rubidium", "铷"], [38, "Sr", "Strontium", "锶"], [39, "Y", "Yttrium", "钇"], [40, "Zr", "Zirconium", "锆"],
+      [41, "Nb", "Niobium", "铌"], [42, "Mo", "Molybdenum", "钼"], [43, "Tc", "Technetium", "锝"], [44, "Ru", "Ruthenium", "钌"],
+      [45, "Rh", "Rhodium", "铑"], [46, "Pd", "Palladium", "钯"], [47, "Ag", "Silver", "银"], [48, "Cd", "Cadmium", "镉"],
+      [49, "In", "Indium", "铟"], [50, "Sn", "Tin", "锡"], [51, "Sb", "Antimony", "锑"], [52, "Te", "Tellurium", "碲"],
+      [53, "I", "Iodine", "碘"], [54, "Xe", "Xenon", "氙"], [55, "Cs", "Caesium", "铯"], [56, "Ba", "Barium", "钡"],
+      [57, "La", "Lanthanum", "镧"], [58, "Ce", "Cerium", "铈"], [59, "Pr", "Praseodymium", "镨"], [60, "Nd", "Neodymium", "钕"],
+      [61, "Pm", "Promethium", "钷"], [62, "Sm", "Samarium", "钐"], [63, "Eu", "Europium", "铕"], [64, "Gd", "Gadolinium", "钆"],
+      [65, "Tb", "Terbium", "铽"], [66, "Dy", "Dysprosium", "镝"], [67, "Ho", "Holmium", "钬"], [68, "Er", "Erbium", "铒"],
+      [69, "Tm", "Thulium", "铥"], [70, "Yb", "Ytterbium", "镱"], [71, "Lu", "Lutetium", "镥"], [72, "Hf", "Hafnium", "铪"],
+      [73, "Ta", "Tantalum", "钽"], [74, "W", "Tungsten", "钨"], [75, "Re", "Rhenium", "铼"], [76, "Os", "Osmium", "锇"],
+      [77, "Ir", "Iridium", "铱"], [78, "Pt", "Platinum", "铂"], [79, "Au", "Gold", "金"], [80, "Hg", "Mercury", "汞"],
+      [81, "Tl", "Thallium", "铊"], [82, "Pb", "Lead", "铅"], [83, "Bi", "Bismuth", "铋"], [84, "Po", "Polonium", "钋"],
+      [85, "At", "Astatine", "砹"], [86, "Rn", "Radon", "氡"], [87, "Fr", "Francium", "钫"], [88, "Ra", "Radium", "镭"],
+      [89, "Ac", "Actinium", "锕"], [90, "Th", "Thorium", "钍"], [91, "Pa", "Protactinium", "镤"], [92, "U", "Uranium", "铀"],
+      [93, "Np", "Neptunium", "镎"], [94, "Pu", "Plutonium", "钚"]
+    ];
+
+    function renderAtomicTable(lang) {
+      const container = document.getElementById("atomic-table-container");
+      const nameIndex = lang === "zh" ? 3 : 2;
+      let html = "<table><thead><tr>";
+      for (let i = 0; i < 4; i += 1) {
+        html += `<th>Z</th><th>${lang === "zh" ? "符号" : "Symbol"}</th><th>${lang === "zh" ? "名称" : "Name"}</th>`;
+      }
+      html += "</tr></thead><tbody>";
+      for (let row = 0; row < Math.ceil(atomicElements.length / 4); row += 1) {
+        html += "<tr>";
+        for (let col = 0; col < 4; col += 1) {
+          const item = atomicElements[row * 4 + col];
+          html += item ? `<td>${item[0]}</td><td>${item[1]}</td><td>${item[nameIndex]}</td>` : "<td></td><td></td><td></td>";
+        }
+        html += "</tr>";
+      }
+      html += "</tbody></table>";
+      container.innerHTML = html;
+    }
+
+    (function () {
+      const buttons = document.querySelectorAll("[data-set-lang]");
+      const stored = localStorage.getItem("sciverse_manual_lang");
+      const initial = stored || "en";
+      function setLang(lang) {
+        document.body.classList.toggle("lang-en", lang === "en");
+        document.body.classList.toggle("lang-zh", lang === "zh");
+        document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+        localStorage.setItem("sciverse_manual_lang", lang);
+        renderAtomicTable(lang);
+      }
+      buttons.forEach((button) => button.addEventListener("click", () => setLang(button.dataset.setLang)));
+      setLang(initial);
+    })();
+  </script>
+</body>
+</html>
