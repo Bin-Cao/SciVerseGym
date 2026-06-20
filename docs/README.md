@@ -1,0 +1,1 @@
+Download `manual.html` and double-click it to open it on your computer.
