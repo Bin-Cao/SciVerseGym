@@ -427,7 +427,6 @@ print("step:", obs["step"], "budget_left:", obs["budget_left"])</code></pre>
             <tr><td><code>info["formation_energy_per_atom"]</code></td><td><span data-lang="en">Formation energy if same-force-field element references exist; otherwise <code>None</code>.</span><span data-lang="zh">如果存在同力场元素 reference，则为形成能；否则为 <code>None</code>。</span></td></tr>
             <tr><td><code>info["energy_above_hull"]</code></td><td><span data-lang="en">Energy above convex hull if hull references exist; otherwise <code>None</code>.</span><span data-lang="zh">如果存在 hull reference，则为 hull 上方能量；否则为 <code>None</code>。</span></td></tr>
             <tr><td><code>info["phonon_stable"]</code></td><td><span data-lang="en">Phonon stability when phonons are enabled; otherwise <code>None</code>.</span><span data-lang="zh">开启声子时返回声子稳定性；否则为 <code>None</code>。</span></td></tr>
-            <tr><td><code>info["bulk_modulus"]</code></td><td><span data-lang="en">Reporting field only. The current default reward does not use it.</span><span data-lang="zh">仅作为返回字段；当前默认 reward 不使用它。</span></td></tr>
           </tbody>
         </table>
       </section>
@@ -446,8 +445,8 @@ print(energy_per_atom)</code></pre>
 
       <section id="reward">
         <h2><span data-lang="en">9. Reward</span><span data-lang="zh">9. Reward 机制</span></h2>
-        <p data-lang="en">The current default reward excludes stiffness and <code>bulk_modulus</code>.</p>
-        <p data-lang="zh">当前默认 reward 不包含 stiffness，也不使用 <code>bulk_modulus</code>。</p>
+        <p data-lang="en">The default reward combines stability, element abundance, and composition novelty.</p>
+        <p data-lang="zh">默认 reward 由稳定性、元素丰度和组成新颖性三部分构成。</p>
         <pre><code class="language-text">reward = 0.80 * stability + 0.10 * abundance_proxy + 0.10 * novelty</code></pre>
         <table>
           <thead><tr><th><span data-lang="en">Term</span><span data-lang="zh">项</span></th><th><span data-lang="en">Definition</span><span data-lang="zh">定义</span></th><th><span data-lang="en">Meaning</span><span data-lang="zh">含义</span></th></tr></thead>
