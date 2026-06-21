@@ -1,6 +1,6 @@
 # SVGym
 
-SciVerseGym (SVGym) is a Gymnasium-style environment for crystal-structure discovery. Agents submit structured crystal-edit actions, and the environment returns the standard:
+SciVerseGym ([SVGym](https://bin-cao.github.io/SciVerseGym/)) is a Gymnasium-style environment for crystal-structure discovery. Agents submit structured crystal-edit actions, and the environment returns the standard:
 
 ```python
 obs, reward, terminated, truncated, info = env.step(action)
