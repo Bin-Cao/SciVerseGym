@@ -1,4 +1,4 @@
-# [SVGym](https://bin-cao.github.io/SciVerseGym/)
+# [SVGym](https://bin-cao.github.io/SciVerseGym/) | [arXiv](https://arxiv.org/abs/2606.22425)
 
 SciVerseGym (SVGym) is a Gymnasium-style environment for crystal-structure discovery. Agents submit structured crystal-edit actions, and the environment returns the standard:
 
