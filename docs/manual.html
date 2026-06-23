@@ -323,6 +323,7 @@
         <a href="#dataset"><span data-lang="en">12. Dataset</span><span data-lang="zh">12. 数据集</span></a>
         <a href="#api"><span data-lang="en">13. API Reference</span><span data-lang="zh">13. API 速查</span></a>
         <a href="#troubleshooting"><span data-lang="en">14. Troubleshooting</span><span data-lang="zh">14. 常见问题</span></a>
+        <a href="#citation"><span data-lang="en">15. Citation</span><span data-lang="zh">15. 引用方式</span></a>
       </nav>
     </aside>
 
@@ -674,6 +675,21 @@ env = gym.make(
           <li><span data-lang="en">If raw random actions select unsupported elements, use controlled candidate actions instead of <code>env.action_space.sample()</code>.</span><span data-lang="zh">如果裸随机 action 抽到 MLFF 不支持的元素，请使用受控候选 action，不要直接用 <code>env.action_space.sample()</code>。</span></li>
           <li><span data-lang="en">If PyG optional extensions warn about ABI mismatch, the fallback graph path may still allow environment loops to run.</span><span data-lang="zh">如果 PyG 可选扩展出现 ABI warning，fallback graph 路径通常仍可让环境循环运行。</span></li>
         </ul>
+      </section>
+
+      <section id="citation">
+        <h2><span data-lang="en">15. Citation</span><span data-lang="zh">15. 引用方式</span></h2>
+        <p data-lang="en">If you use SVGym (SciVerseGym), please cite:</p>
+        <p data-lang="zh">如果你使用 SVGym (SciVerseGym)，请引用：</p>
+        <pre><code class="language-bibtex">@misc{cao2026svgymsciversegymenvironmentreinforcement,
+      title={SVGym (SciVerseGym): An Environment for Reinforcement Learning and Bayesian Optimization in Crystal Discovery},
+      author={Bin Cao},
+      year={2026},
+      eprint={2606.22425},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2606.22425},
+}</code></pre>
       </section>
 
       <footer>

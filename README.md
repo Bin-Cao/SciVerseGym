@@ -53,3 +53,19 @@ python -m sciverse_gym.benchmarks.rl_baselines.random_rollout --steps 5 --mlff-m
 ## Documentation
 
 Open `docs/manual.html` in a browser for the full bilingual manual. It covers installation, all `gym.make(...)` parameters, action schemas, atomic numbers, BO/RL training examples, reward calculation, formation energy, convex hull, phonons, datasets, and troubleshooting.
+
+## Citation
+
+If you use SVGym (SciVerseGym), please cite:
+
+```bibtex
+@misc{cao2026svgymsciversegymenvironmentreinforcement,
+      title={SVGym (SciVerseGym): An Environment for Reinforcement Learning and Bayesian Optimization in Crystal Discovery},
+      author={Bin Cao},
+      year={2026},
+      eprint={2606.22425},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2606.22425},
+}
+```
