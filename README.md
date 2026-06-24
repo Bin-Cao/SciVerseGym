@@ -1,6 +1,28 @@
-# [SVGym](https://bin-cao.github.io/SciVerseGym/) | [arXiv](https://arxiv.org/abs/2606.22425)
+<div align="center">
 
-SciVerseGym (SVGym) is a Gymnasium-style environment for crystal-structure discovery. Agents submit structured crystal-edit actions, and the environment returns the standard:
+# SciVerseGym
+
+### SVGym: A Gymnasium Environment for Crystal Discovery
+
+[![GitHub stars](https://img.shields.io/github/stars/Bin-Cao/SciVerseGym?style=social)](https://github.com/Bin-Cao/SciVerseGym/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Bin-Cao/SciVerseGym?style=social)](https://github.com/Bin-Cao/SciVerseGym/forks)
+[![arXiv](https://img.shields.io/badge/arXiv-2606.22425-b31b1b.svg)](https://arxiv.org/abs/2606.22425)
+[![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Gymnasium](https://img.shields.io/badge/Gymnasium-compatible-1f883d)](https://gymnasium.farama.org/)
+[![MLFF](https://img.shields.io/badge/MLFF-SevenNet%20%7C%20MatterSim%20%7C%20ORB-6f42c1)](#highlights)
+
+[Website](https://bin-cao.github.io/SciVerseGym/) ·
+[Repository](https://github.com/Bin-Cao/SciVerseGym) ·
+[Paper](https://arxiv.org/abs/2606.22425) ·
+[Manual](docs/manual.html)
+
+**Language:** English | [中文](docs/README.zh.md) | [日本語](docs/README.ja.md) | [한국어](docs/README.ko.md) | [Español](docs/README.es.md) | [Deutsch](docs/README.de.md)
+
+</div>
+
+---
+
+SciVerseGym (SVGym) is a Gymnasium-style environment for crystal-structure discovery. Agents submit structured crystal-edit actions, and the environment returns the standard Gymnasium step tuple:
 
 ```python
 obs, reward, terminated, truncated, info = env.step(action)
@@ -8,12 +30,14 @@ obs, reward, terminated, truncated, info = env.step(action)
 
 ## Highlights
 
-- [ENV] `CrystalDiscovery-v0` for MLFF-backed crystal discovery.
-- [ACT] Element replacement, lattice perturbation, atom displacement, vacancy, and insertion.
-- [MLFF] Packaged SevenNet, MatterSim, and ORB checkpoints.
-- [DATA] Local ALEX-MP-20 parquet dataset under `data/alex-mp-20/`.
-- [BO/RL] Minimal Bayesian optimization and random-rollout examples.
-- [DOC] Complete bilingual English/Chinese manual: `docs/manual_zh.html`.
+| Area | Capability |
+| --- | --- |
+| Environment | `CrystalDiscovery-v0` for MLFF-backed crystal discovery |
+| Actions | Element replacement, lattice perturbation, atom displacement, vacancy, and insertion |
+| MLFF backends | Packaged SevenNet, MatterSim, and ORB checkpoints |
+| Dataset | Local ALEX-MP-20 parquet dataset under `data/alex-mp-20/` |
+| Baselines | Minimal Bayesian optimization and random-rollout examples |
+| Documentation | Full bilingual English/Chinese manual in `docs/manual.html` |
 
 ## Install
 
@@ -52,7 +76,7 @@ python -m sciverse_gym.benchmarks.rl_baselines.random_rollout --steps 5 --mlff-m
 
 ## Documentation
 
-Open `docs/manual.html` in a browser for the full bilingual manual. It covers installation, all `gym.make(...)` parameters, action schemas, atomic numbers, BO/RL training examples, reward calculation, formation energy, convex hull, phonons, datasets, and troubleshooting.
+Open `docs/manual.html` in a browser for the full manual. It covers installation, all `gym.make(...)` parameters, action schemas, atomic numbers, BO/RL examples, reward calculation, formation energy, convex hull, phonons, datasets, and troubleshooting.
 
 ## Citation
 
