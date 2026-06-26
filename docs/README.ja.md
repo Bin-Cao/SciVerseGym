@@ -48,4 +48,8 @@ python -m sciverse_gym.benchmarks.bo_baselines.simple_bo --steps 5 --mlff-model 
 python -m sciverse_gym.benchmarks.rl_baselines.random_rollout --steps 5 --mlff-model sevennet
 ```
 
+## Crystal Playground
+
+`docs/crystal-playground.html` をブラウザで直接開くと、英語/中国語の双方向 Crystal Playground をローカルで実行できます。サーバーや追加依存関係は不要です。多様な結晶プリセットの生成、CIF ファイルのアップロードと対称操作による完全単位胞への展開、格子と原子変位の調整、空孔の追加、SVGym 形式の編集ステップ、局所拡大表示、構造緩和、観測 JSON のエクスポートを試せます。
+
 詳細は [manual](manual.html)、[repository](https://github.com/Bin-Cao/SciVerseGym)、[paper](https://arxiv.org/abs/2606.22425) を参照してください。

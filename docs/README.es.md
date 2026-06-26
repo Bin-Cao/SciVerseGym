@@ -48,4 +48,8 @@ python -m sciverse_gym.benchmarks.bo_baselines.simple_bo --steps 5 --mlff-model 
 python -m sciverse_gym.benchmarks.rl_baselines.random_rollout --steps 5 --mlff-model sevennet
 ```
 
+## Crystal Playground
+
+Abre `docs/crystal-playground.html` directamente en el navegador para usar el Crystal Playground bilingüe inglés/chino en local. No necesita servidor ni dependencias adicionales. Permite generar muchos preajustes cristalinos, subir un archivo CIF con expansión de simetría a la celda unidad completa, ajustar red y desplazamientos atómicos, añadir vacantes, ejecutar pasos de edición estilo SVGym, inspeccionar una vista local ampliada, relajar la estructura y exportar la observación como JSON.
+
 Consulta el [manual](manual.html), el [repositorio](https://github.com/Bin-Cao/SciVerseGym) y el [artículo](https://arxiv.org/abs/2606.22425) para más detalles.

@@ -78,6 +78,10 @@ python -m sciverse_gym.benchmarks.rl_baselines.random_rollout --steps 5 --mlff-m
 
 Open `docs/manual.html` in a browser for the full manual. It covers installation, all `gym.make(...)` parameters, action schemas, atomic numbers, BO/RL examples, reward calculation, formation energy, convex hull, phonons, datasets, and troubleshooting.
 
+## Crystal Playground
+
+Open `docs/crystal-playground.html` directly in a browser to try the bilingual English/Chinese SVGym Crystal Playground. It runs locally with no server or extra dependencies. Use the controls to generate many crystal presets, upload a CIF file with symmetry expansion into the full unit cell, adjust the lattice, add displacement or vacancies, run SVGym-style edit steps, inspect the local zoom view, relax the structure, and export the current observation as JSON.
+
 ## Citation
 
 If you use SVGym (SciVerseGym), please cite:

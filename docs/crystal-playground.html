@@ -1,0 +1,1876 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SVGym Crystal Playground</title>
+  <style>
+    :root {
+      --bg: #f5f7f4;
+      --panel: #ffffff;
+      --ink: #1f2933;
+      --muted: #64707d;
+      --line: #d9e0df;
+      --accent: #0f766e;
+      --accent-2: #b45309;
+      --accent-3: #334155;
+      --good: #15803d;
+      --warn: #c2410c;
+      --shadow: 0 16px 42px rgba(31, 41, 51, 0.12);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.08), transparent 38%),
+        linear-gradient(315deg, rgba(180, 83, 9, 0.08), transparent 36%),
+        var(--bg);
+      color: var(--ink);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--ink);
+      min-height: 40px;
+      padding: 0 12px;
+      cursor: pointer;
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    button.secondary {
+      background: #fff7ed;
+      border-color: #fed7aa;
+      color: #7c2d12;
+    }
+
+    button.ghost {
+      background: transparent;
+    }
+
+    .app {
+      width: min(1500px, 100%);
+      margin: 0 auto;
+      padding: 18px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 14px;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(12px);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 34px);
+      letter-spacing: 0;
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 4px;
+      font-size: 14px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(290px, 360px) minmax(0, 1fr) minmax(280px, 340px);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    aside,
+    main {
+      min-height: 0;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .controls,
+    .inspector {
+      padding: 14px;
+      overflow: auto;
+    }
+
+    .section {
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      letter-spacing: 0;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    select,
+    input[type="range"] {
+      width: 100%;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      min-height: 38px;
+      border: 1px dashed #a7b6b4;
+      border-radius: 8px;
+      background: #f8fbfa;
+      padding: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    select {
+      min-height: 38px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      padding: 0 10px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 64px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .value {
+      min-height: 32px;
+      border-radius: 8px;
+      background: #eef5f3;
+      display: grid;
+      place-items: center;
+      color: var(--accent-3);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .stage {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      background: #fbfcfb;
+    }
+
+    .viewport {
+      position: relative;
+      min-height: 560px;
+      overflow: hidden;
+      cursor: grab;
+    }
+
+    .viewport:active {
+      cursor: grabbing;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      min-height: 560px;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(15, 118, 110, 0.11), transparent 34%),
+        linear-gradient(transparent 0 31px, rgba(31, 41, 51, 0.035) 32px),
+        linear-gradient(90deg, transparent 0 31px, rgba(31, 41, 51, 0.035) 32px),
+        #fbfcfb;
+      background-size: auto, 32px 32px, 32px 32px, auto;
+    }
+
+    .zoom-svg {
+      min-height: 220px;
+      height: 220px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 48% 46%, rgba(180, 83, 9, 0.16), transparent 36%),
+        #fbfcfb;
+    }
+
+    .hud {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      pointer-events: none;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--accent-3);
+      font-size: 12px;
+      backdrop-filter: blur(8px);
+    }
+
+    .timeline {
+      border-top: 1px solid var(--line);
+      padding: 12px 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      overflow-x: auto;
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .step-pill {
+      white-space: nowrap;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      background: #fff;
+      color: var(--muted);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+      min-height: 72px;
+    }
+
+    .metric b {
+      display: block;
+      font-size: 20px;
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend {
+      display: grid;
+      gap: 8px;
+    }
+
+    .legend-row {
+      display: grid;
+      grid-template-columns: 22px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.14);
+    }
+
+    pre {
+      margin: 0;
+      max-height: 300px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #101820;
+      color: #e6edf3;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .status {
+      border-left: 4px solid var(--accent);
+      background: #eef5f3;
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--accent-3);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .info-list div {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 9px 10px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .info-list b {
+      display: block;
+      margin-bottom: 2px;
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .citation {
+      margin: 0;
+      max-height: 190px;
+      font-size: 11px;
+    }
+
+    /* Premium visual layer */
+    :root {
+      --bg: #eef2f1;
+      --panel: rgba(255, 255, 255, 0.92);
+      --ink: #17202a;
+      --muted: #64717d;
+      --line: rgba(47, 63, 75, 0.14);
+      --accent: #087f7a;
+      --accent-2: #b56b18;
+      --accent-3: #263847;
+      --shadow: 0 18px 48px rgba(31, 41, 51, 0.14);
+      --shadow-tight: 0 10px 26px rgba(31, 41, 51, 0.1);
+    }
+
+    body {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.22) 34%, transparent),
+        linear-gradient(135deg, rgba(8, 127, 122, 0.12), transparent 42%),
+        linear-gradient(315deg, rgba(181, 107, 24, 0.11), transparent 44%),
+        linear-gradient(90deg, rgba(23, 32, 42, 0.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(23, 32, 42, 0.035) 1px, transparent 1px),
+        var(--bg);
+      background-size: auto, auto, auto, 56px 56px, 56px 56px, auto;
+    }
+
+    .app {
+      width: min(1560px, 100%);
+      padding: 20px;
+      gap: 16px;
+    }
+
+    header {
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, 0.76);
+      border-color: rgba(47, 63, 75, 0.16);
+      backdrop-filter: blur(18px);
+    }
+
+    h1 {
+      color: #111a22;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      color: #5d6b77;
+    }
+
+    .layout {
+      grid-template-columns: minmax(300px, 370px) minmax(0, 1fr) minmax(300px, 360px);
+      gap: 16px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border-color: rgba(47, 63, 75, 0.16);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .controls,
+    .inspector {
+      padding: 16px;
+    }
+
+    .section {
+      padding: 14px 0;
+    }
+
+    h2 {
+      color: #17202a;
+      font-size: 13px;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    label {
+      font-weight: 650;
+    }
+
+    button {
+      background: linear-gradient(180deg, #ffffff, #f4f7f6);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85) inset, 0 6px 14px rgba(31, 41, 51, 0.06);
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+    }
+
+    button:hover {
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 10px 18px rgba(31, 41, 51, 0.1);
+    }
+
+    button.primary {
+      background: linear-gradient(180deg, #0a918b, #075e5b);
+      border-color: rgba(7, 94, 91, 0.8);
+    }
+
+    button.secondary {
+      background: linear-gradient(180deg, #fffaf2, #f4eadb);
+      border-color: rgba(181, 107, 24, 0.28);
+      color: #74430f;
+    }
+
+    select,
+    input[type="file"] {
+      background: linear-gradient(180deg, #ffffff, #f7faf9);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    }
+
+    input[type="file"] {
+      border-color: rgba(8, 127, 122, 0.42);
+    }
+
+    input[type="range"] {
+      accent-color: var(--accent);
+    }
+
+    .value {
+      border: 1px solid rgba(8, 127, 122, 0.12);
+      background: #edf6f4;
+      color: #075e5b;
+      font-weight: 700;
+    }
+
+    .stage {
+      background: #f7faf9;
+    }
+
+    svg {
+      background:
+        radial-gradient(circle at 50% 46%, rgba(8, 127, 122, 0.18), transparent 31%),
+        radial-gradient(circle at 50% 54%, rgba(181, 107, 24, 0.1), transparent 42%),
+        linear-gradient(transparent 0 31px, rgba(31, 41, 51, 0.045) 32px),
+        linear-gradient(90deg, transparent 0 31px, rgba(31, 41, 51, 0.045) 32px),
+        linear-gradient(180deg, #fcfdfd, #f4f8f7);
+      background-size: auto, auto, 32px 32px, 32px 32px, auto;
+    }
+
+    .zoom-svg {
+      background:
+        radial-gradient(circle at 48% 46%, rgba(181, 107, 24, 0.18), transparent 36%),
+        linear-gradient(180deg, #ffffff, #f4f8f7);
+      box-shadow: var(--shadow-tight);
+    }
+
+    .chip {
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 8px 18px rgba(31, 41, 51, 0.08);
+      font-weight: 650;
+    }
+
+    .timeline {
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(12px);
+    }
+
+    .step-pill,
+    .metric,
+    .info-list div {
+      background: linear-gradient(180deg, #ffffff, #f8fbfa);
+      box-shadow: var(--shadow-tight);
+    }
+
+    .metric {
+      padding: 12px;
+    }
+
+    .metric b {
+      color: #111a22;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .swatch {
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 6px 12px rgba(31, 41, 51, 0.12);
+    }
+
+    pre {
+      background: #111b22;
+      color: #e7f0ef;
+    }
+
+    .status {
+      background: linear-gradient(180deg, #eef8f6, #e8f1ef);
+    }
+
+    @media (max-width: 1120px) {
+      .layout {
+        grid-template-columns: 320px minmax(0, 1fr);
+      }
+
+      .inspector {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        padding: 10px;
+      }
+
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .header-actions,
+      .header-actions button {
+        width: 100%;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .viewport,
+      svg {
+        min-height: 460px;
+      }
+
+      .button-grid,
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1 data-i18n="title">SVGym Crystal Playground</h1>
+        <div class="subtitle" data-i18n="subtitle">Generate, mutate, relax, and inspect crystals in the browser.</div>
+      </div>
+      <div class="header-actions">
+        <button class="ghost" id="langBtn" type="button">中文</button>
+        <button class="secondary" id="exportBtn" type="button" data-i18n="export">Export JSON</button>
+        <button class="primary" id="stepBtn" type="button" data-i18n="svgyStep">SVGym step</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="panel controls">
+        <div class="section">
+          <h2 data-i18n="recipe">Crystal recipe</h2>
+          <div class="field">
+            <label for="preset" data-i18n="preset">Structure preset</label>
+            <select id="preset">
+              <option value="nacl">NaCl rocksalt</option>
+              <option value="cscl">CsCl body centered</option>
+              <option value="bcc">BCC metal</option>
+              <option value="fcc">FCC metal</option>
+              <option value="hcp">HCP metal</option>
+              <option value="diamond">Diamond cubic</option>
+              <option value="zincblende">Zinc blende</option>
+              <option value="wurtzite">Wurtzite</option>
+              <option value="perovskite">ABO3 perovskite</option>
+              <option value="fluorite">AX2 fluorite</option>
+              <option value="rutile">BO2 rutile</option>
+              <option value="spinel">AB2O4 spinel</option>
+              <option value="custom">Uploaded CIF</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cifFile" data-i18n="uploadCif">Upload CIF</label>
+            <input id="cifFile" type="file" accept=".cif,.txt">
+          </div>
+          <div class="field">
+            <label for="elementA" data-i18n="elementA">Element A</label>
+            <select id="elementA"></select>
+          </div>
+          <div class="field">
+            <label for="elementB" data-i18n="elementB">Element B</label>
+            <select id="elementB"></select>
+          </div>
+          <div class="field">
+            <label for="elementO" data-i18n="elementO">Anion / element C</label>
+            <select id="elementO"></select>
+          </div>
+          <div class="status" data-i18n="elementHint">These are chemistry channels for presets and replacement actions. CIF uploads fill them from the first detected elements.</div>
+        </div>
+
+        <div class="section">
+          <h2 data-i18n="controls">Direct controls</h2>
+          <div class="field">
+            <label for="cells" data-i18n="cells">Supercell size</label>
+            <div class="field-row">
+              <input id="cells" min="1" max="4" step="1" value="3" type="range">
+              <div class="value" id="cellsValue">3</div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="lattice" data-i18n="lattice">Lattice constant</label>
+            <div class="field-row">
+              <input id="lattice" min="3.0" max="7.5" step="0.1" value="5.2" type="range">
+              <div class="value" id="latticeValue">5.2</div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="jitter" data-i18n="jitter">Atomic displacement</label>
+            <div class="field-row">
+              <input id="jitter" min="0" max="0.42" step="0.01" value="0.05" type="range">
+              <div class="value" id="jitterValue">0.05</div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="vacancy" data-i18n="vacancy">Vacancy chance</label>
+            <div class="field-row">
+              <input id="vacancy" min="0" max="0.32" step="0.01" value="0" type="range">
+              <div class="value" id="vacancyValue">0.00</div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="rotation" data-i18n="rotation">Auto rotation</label>
+            <div class="field-row">
+              <input id="rotation" min="0" max="1.8" step="0.1" value="0.5" type="range">
+              <div class="value" id="rotationValue">0.5</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2 data-i18n="actions">Actions</h2>
+          <div class="button-grid">
+            <button id="generateBtn" type="button" data-i18n="generate">Generate</button>
+            <button id="mutateBtn" type="button" data-i18n="mutate">Random mutate</button>
+            <button id="replaceBtn" type="button" data-i18n="replace">Replace element</button>
+            <button id="relaxBtn" type="button" data-i18n="relax">Relax</button>
+            <button id="insertBtn" type="button" data-i18n="insert">Insert atom</button>
+            <button id="resetBtn" type="button" data-i18n="resetButton">Reset</button>
+          </div>
+        </div>
+      </aside>
+
+      <main class="panel stage">
+        <div class="viewport" id="viewport" aria-label="Crystal viewport">
+          <svg id="crystalSvg" role="img" aria-labelledby="svgTitle">
+            <title id="svgTitle">Interactive crystal structure visualization</title>
+          </svg>
+          <div class="hud">
+            <div class="chip" id="formulaChip">Na27 Cl27</div>
+            <div class="chip" id="energyChip">E -4.28 eV/atom</div>
+            <div class="chip" id="rewardChip">Reward 0.78</div>
+          </div>
+        </div>
+        <div class="timeline" id="timeline"></div>
+      </main>
+
+      <aside class="panel inspector">
+        <div class="section">
+          <h2 data-i18n="state">Environment state</h2>
+          <div class="metric-grid">
+            <div class="metric"><b id="atomsMetric">54</b><span data-i18n="atoms">atoms</span></div>
+            <div class="metric"><b id="bondsMetric">0</b><span data-i18n="bonds">near bonds</span></div>
+            <div class="metric"><b id="energyMetric">-4.28</b><span data-i18n="energy">pseudo energy</span></div>
+            <div class="metric"><b id="rewardMetric">0.78</b><span data-i18n="reward">reward</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2 data-i18n="legend">Elements</h2>
+          <div class="legend" id="legend"></div>
+        </div>
+
+        <div class="section">
+          <h2 data-i18n="localZoom">Local zoom</h2>
+          <svg class="zoom-svg" id="zoomSvg" role="img" aria-label="Local crystal zoom"></svg>
+        </div>
+
+        <div class="section">
+          <h2 data-i18n="actionGuide">Action guide</h2>
+          <div class="info-list">
+            <div><b data-i18n="actionReplaceTitle">Replace element</b><span data-i18n="actionReplaceText">Changes one chemistry channel to the selected element, like SVGym element replacement.</span></div>
+            <div><b data-i18n="actionLatticeTitle">Perturb lattice</b><span data-i18n="actionLatticeText">Adjusts the lattice constant and updates pseudo energy and reward.</span></div>
+            <div><b data-i18n="actionDisplaceTitle">Displace atom</b><span data-i18n="actionDisplaceText">Moves atoms away from ideal fractional sites to visualize structural exploration.</span></div>
+            <div><b data-i18n="actionVacancyTitle">Vacancy / insertion</b><span data-i18n="actionVacancyText">Removes or inserts atoms to mimic defect and composition search.</span></div>
+            <div><b data-i18n="actionRelaxTitle">Relax</b><span data-i18n="actionRelaxText">Moves atoms back toward ideal sites and lowers the toy energy score.</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2 data-i18n="authorInfo">Author</h2>
+          <div class="status">
+            <span data-i18n="authorText">SciVerseGym / SVGym author: Bin Cao (https://bin-cao.github.io). GitHub: https://github.com/Bin-Cao/SciVerseGym</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2 data-i18n="citationTitle">Citation</h2>
+          <pre class="citation">@misc{cao2026svgymsciversegymenvironmentreinforcement,
+  title={SVGym (SciVerseGym): An Environment for Reinforcement Learning and Bayesian Optimization in Crystal Discovery},
+  author={Bin Cao},
+  year={2026},
+  eprint={2606.22425},
+  archivePrefix={arXiv},
+  primaryClass={cs.AI},
+  url={https://arxiv.org/abs/2606.22425},
+}</pre>
+        </div>
+
+        <div class="section">
+          <h2 data-i18n="actionLog">Action log</h2>
+          <div class="status" id="statusText"></div>
+        </div>
+
+        <div class="section">
+          <h2 data-i18n="observation">Observation</h2>
+          <pre id="observation"></pre>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const i18n = {
+      en: {
+        title: "SVGym Crystal Playground",
+        subtitle: "Generate, mutate, relax, and inspect crystals in the browser.",
+        export: "Export JSON",
+        svgyStep: "SVGym step",
+        recipe: "Crystal recipe",
+        preset: "Structure preset",
+        uploadCif: "Upload CIF",
+        elementA: "Channel A / replacement target",
+        elementB: "Channel B / replacement target",
+        elementO: "Channel C / anion target",
+        elementHint: "These are chemistry channels for presets and replacement actions. CIF uploads fill them from the first detected elements.",
+        controls: "Direct controls",
+        cells: "Supercell size",
+        lattice: "Lattice constant",
+        jitter: "Atomic displacement",
+        vacancy: "Vacancy chance",
+        rotation: "Auto rotation",
+        actions: "Actions",
+        generate: "Generate",
+        mutate: "Random mutate",
+        replace: "Replace element",
+        relax: "Relax",
+        insert: "Insert atom",
+        resetButton: "Reset",
+        state: "Environment state",
+        atoms: "atoms",
+        bonds: "near bonds",
+        energy: "pseudo energy",
+        reward: "reward",
+        legend: "Elements",
+        localZoom: "Local zoom",
+        actionGuide: "Action guide",
+        actionReplaceTitle: "Replace element",
+        actionReplaceText: "Changes one chemistry channel to the selected element, like SVGym element replacement.",
+        actionLatticeTitle: "Perturb lattice",
+        actionLatticeText: "Adjusts the lattice constant and updates pseudo energy and reward.",
+        actionDisplaceTitle: "Displace atom",
+        actionDisplaceText: "Moves atoms away from ideal fractional sites to visualize structural exploration.",
+        actionVacancyTitle: "Vacancy / insertion",
+        actionVacancyText: "Removes or inserts atoms to mimic defect and composition search.",
+        actionRelaxTitle: "Relax",
+        actionRelaxText: "Moves atoms back toward ideal sites and lowers the toy energy score.",
+        authorInfo: "Author",
+        authorText: "SciVerseGym / SVGym author: Bin Cao (https://bin-cao.github.io). GitHub: https://github.com/Bin-Cao/SciVerseGym",
+        citationTitle: "Citation",
+        actionLog: "Action log",
+        observation: "Observation",
+        generated: "Generated a crystal from the selected SVGym-inspired action space.",
+        mutated: "Applied a random edit action: displacement, lattice perturbation, vacancy, insertion, or element replacement.",
+        stepped: "Ran one SVGym-style environment step and updated observation, reward, and structure.",
+        replaced: "Replaced one chemistry channel with the selected element.",
+        relaxed: "Relaxed atoms toward ideal fractional positions and reduced pseudo energy.",
+        inserted: "Inserted a new atom into an open fractional site.",
+        reset: "Reset to the default rocksalt scene.",
+        exported: "Exported the current observation JSON.",
+        cifLoaded: "Loaded a CIF file, expanded symmetry operations when present, and converted the full cell into an editable SVGym scene.",
+        cifError: "Could not read atom fractional coordinates from this CIF file.",
+      },
+      zh: {
+        title: "SVGym 晶体乐园",
+        subtitle: "在浏览器里生成、突变、弛豫并观察晶体结构。",
+        export: "导出 JSON",
+        svgyStep: "SVGym 步进",
+        recipe: "晶体配方",
+        preset: "结构预设",
+        uploadCif: "上传 CIF",
+        elementA: "通道 A / 替换目标",
+        elementB: "通道 B / 替换目标",
+        elementO: "通道 C / 阴离子目标",
+        elementHint: "这三个是预设结构和替换动作使用的化学通道。上传 CIF 后会自动填入检测到的前几个元素。",
+        controls: "直接控制",
+        cells: "超胞尺寸",
+        lattice: "晶格常数",
+        jitter: "原子位移",
+        vacancy: "空位概率",
+        rotation: "自动旋转",
+        actions: "动作",
+        generate: "生成",
+        mutate: "随机突变",
+        replace: "替换元素",
+        relax: "弛豫",
+        insert: "插入原子",
+        resetButton: "重置",
+        state: "环境状态",
+        atoms: "原子数",
+        bonds: "近邻键",
+        energy: "模拟能量",
+        reward: "奖励",
+        legend: "元素",
+        localZoom: "局部放大",
+        actionGuide: "动作说明",
+        actionReplaceTitle: "替换元素",
+        actionReplaceText: "把一个化学通道替换为所选元素，对应 SVGym 的元素替换动作。",
+        actionLatticeTitle: "晶格扰动",
+        actionLatticeText: "调节晶格常数，并同步更新模拟能量和奖励。",
+        actionDisplaceTitle: "原子位移",
+        actionDisplaceText: "让原子偏离理想分数坐标，用于感受结构搜索过程。",
+        actionVacancyTitle: "空位 / 插入",
+        actionVacancyText: "移除或插入原子，用来模拟缺陷和组分搜索。",
+        actionRelaxTitle: "弛豫",
+        actionRelaxText: "让原子回到更接近理想位点的位置，并降低玩具能量分数。",
+        authorInfo: "作者",
+        authorText: "SciVerseGym / SVGym 作者：Bin Cao (https://bin-cao.github.io)。GitHub: https://github.com/Bin-Cao/SciVerseGym",
+        citationTitle: "文献引用",
+        actionLog: "动作日志",
+        observation: "观测值",
+        generated: "已根据 SVGym 风格动作空间生成晶体。",
+        mutated: "已应用随机编辑动作：位移、晶格扰动、空位、插入或元素替换。",
+        stepped: "已执行一步 SVGym 风格环境交互，并更新观测、奖励和结构。",
+        replaced: "已将一个化学通道替换为所选元素。",
+        relaxed: "已让原子向理想分数坐标弛豫，并降低模拟能量。",
+        inserted: "已在开放分数坐标位置插入新原子。",
+        reset: "已重置为默认岩盐结构场景。",
+        exported: "已导出当前观测 JSON。",
+        cifLoaded: "已读取 CIF 文件；如存在对称操作，已展开为完整晶胞，并转换为可编辑的 SVGym 场景。",
+        cifError: "无法从这个 CIF 文件中读取原子分数坐标。",
+      }
+    };
+
+    const elements = [
+      ["Li", 3, "#7dd3fc"], ["Na", 11, "#38bdf8"], ["K", 19, "#60a5fa"],
+      ["Mg", 12, "#86efac"], ["Ca", 20, "#4ade80"], ["Sr", 38, "#16a34a"],
+      ["Ba", 56, "#22c55e"], ["Ti", 22, "#facc15"], ["Fe", 26, "#f97316"],
+      ["Ni", 28, "#14b8a6"], ["Cu", 29, "#fb923c"], ["Zn", 30, "#67e8f9"],
+      ["Al", 13, "#cbd5e1"], ["Ga", 31, "#a3e635"], ["Cs", 55, "#a78bfa"],
+      ["Pb", 82, "#818cf8"], ["C", 6, "#475569"], ["Si", 14, "#94a3b8"],
+      ["Ge", 32, "#64748b"], ["P", 15, "#f59e0b"], ["As", 33, "#fb7185"],
+      ["O", 8, "#ef4444"], ["S", 16, "#fde047"], ["F", 9, "#22c55e"],
+      ["Cl", 17, "#84cc16"], ["Br", 35, "#a16207"], ["I", 53, "#7c3aed"]
+    ];
+
+    const radii = { Li: 0.58, Na: 0.68, K: 0.78, Mg: 0.56, Ca: 0.72, Sr: 0.78, Ba: 0.84, Ti: 0.62, Fe: 0.61, Ni: 0.6, Cu: 0.62, Zn: 0.62, Al: 0.55, Ga: 0.6, Cs: 0.86, Pb: 0.78, C: 0.45, Si: 0.58, Ge: 0.6, P: 0.52, As: 0.58, O: 0.48, S: 0.62, F: 0.45, Cl: 0.62, Br: 0.68, I: 0.74 };
+    const colorByElement = Object.fromEntries(elements.map(([s,, c]) => [s, c]));
+    const atomicNumber = Object.fromEntries(elements.map(([s, z]) => [s, z]));
+    const periodicSymbols = new Set("H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og".split(" "));
+
+    function elementColor(symbol) {
+      if (colorByElement[symbol]) return colorByElement[symbol];
+      let hash = 0;
+      for (const char of String(symbol || "X")) hash = (hash * 31 + char.charCodeAt(0)) % 360;
+      return `hsl(${hash} 72% 56%)`;
+    }
+
+    function elementRadius(symbol) {
+      return radii[symbol] || 0.58;
+    }
+
+    const bases = {
+      nacl: [
+        { role: "A", f: [0, 0, 0] }, { role: "B", f: [0.5, 0.5, 0] },
+        { role: "A", f: [0.5, 0, 0.5] }, { role: "B", f: [0, 0.5, 0.5] }
+      ],
+      cscl: [
+        { role: "A", f: [0, 0, 0] }, { role: "B", f: [0.5, 0.5, 0.5] }
+      ],
+      bcc: [
+        { role: "A", f: [0, 0, 0] }, { role: "A", f: [0.5, 0.5, 0.5] }
+      ],
+      fcc: [
+        { role: "A", f: [0, 0, 0] }, { role: "A", f: [0, 0.5, 0.5] },
+        { role: "A", f: [0.5, 0, 0.5] }, { role: "A", f: [0.5, 0.5, 0] }
+      ],
+      hcp: [
+        { role: "A", f: [0, 0, 0] }, { role: "A", f: [0.6667, 0.3333, 0.5] }
+      ],
+      diamond: [
+        { role: "A", f: [0, 0, 0] }, { role: "A", f: [0.25, 0.25, 0.25] },
+        { role: "A", f: [0.5, 0.5, 0] }, { role: "A", f: [0.75, 0.75, 0.25] }
+      ],
+      zincblende: [
+        { role: "A", f: [0, 0, 0] }, { role: "A", f: [0, 0.5, 0.5] },
+        { role: "A", f: [0.5, 0, 0.5] }, { role: "A", f: [0.5, 0.5, 0] },
+        { role: "B", f: [0.25, 0.25, 0.25] }, { role: "B", f: [0.25, 0.75, 0.75] },
+        { role: "B", f: [0.75, 0.25, 0.75] }, { role: "B", f: [0.75, 0.75, 0.25] }
+      ],
+      wurtzite: [
+        { role: "A", f: [0.3333, 0.6667, 0] }, { role: "A", f: [0.6667, 0.3333, 0.5] },
+        { role: "B", f: [0.3333, 0.6667, 0.375] }, { role: "B", f: [0.6667, 0.3333, 0.875] }
+      ],
+      perovskite: [
+        { role: "A", f: [0, 0, 0] }, { role: "B", f: [0.5, 0.5, 0.5] },
+        { role: "O", f: [0.5, 0.5, 0] }, { role: "O", f: [0.5, 0, 0.5] }, { role: "O", f: [0, 0.5, 0.5] }
+      ],
+      fluorite: [
+        { role: "A", f: [0, 0, 0] }, { role: "A", f: [0, 0.5, 0.5] },
+        { role: "A", f: [0.5, 0, 0.5] }, { role: "A", f: [0.5, 0.5, 0] },
+        { role: "B", f: [0.25, 0.25, 0.25] }, { role: "B", f: [0.25, 0.25, 0.75] },
+        { role: "B", f: [0.25, 0.75, 0.25] }, { role: "B", f: [0.75, 0.25, 0.25] },
+        { role: "B", f: [0.75, 0.75, 0.25] }, { role: "B", f: [0.75, 0.25, 0.75] },
+        { role: "B", f: [0.25, 0.75, 0.75] }, { role: "B", f: [0.75, 0.75, 0.75] }
+      ],
+      rutile: [
+        { role: "B", f: [0, 0, 0] }, { role: "B", f: [0.5, 0.5, 0.5] },
+        { role: "O", f: [0.305, 0.305, 0] }, { role: "O", f: [0.695, 0.695, 0] },
+        { role: "O", f: [0.805, 0.195, 0.5] }, { role: "O", f: [0.195, 0.805, 0.5] }
+      ],
+      spinel: [
+        { role: "A", f: [0.125, 0.125, 0.125] }, { role: "A", f: [0.875, 0.875, 0.875] },
+        { role: "B", f: [0.5, 0.5, 0.5] }, { role: "B", f: [0.5, 0.25, 0.25] },
+        { role: "B", f: [0.25, 0.5, 0.25] }, { role: "B", f: [0.25, 0.25, 0.5] },
+        { role: "O", f: [0.262, 0.262, 0.262] }, { role: "O", f: [0.738, 0.738, 0.738] },
+        { role: "O", f: [0.262, 0.738, 0.738] }, { role: "O", f: [0.738, 0.262, 0.738] },
+        { role: "O", f: [0.738, 0.738, 0.262] }, { role: "O", f: [0.262, 0.262, 0.738] }
+      ],
+      custom: []
+    };
+
+    const state = {
+      lang: "en",
+      atoms: [],
+      bonds: [],
+      steps: [],
+      rotX: -0.62,
+      rotY: 0.72,
+      dragging: false,
+      pointer: [0, 0],
+      actionCount: 0,
+      statusKey: "generated",
+      focusAtomId: null,
+      cifName: "",
+      cifAsuAtoms: 0,
+      cifSymmetryOps: 0,
+      customBaseAtoms: []
+    };
+
+    const el = id => document.getElementById(id);
+    const controls = ["preset", "elementA", "elementB", "elementO", "cells", "lattice", "jitter", "vacancy", "rotation"];
+
+    function setupSelects() {
+      for (const id of ["elementA", "elementB", "elementO"]) {
+        el(id).innerHTML = elements.map(([symbol, z]) => `<option value="${symbol}">${symbol} · Z=${z}</option>`).join("");
+      }
+      el("elementA").value = "Na";
+      el("elementB").value = "Cl";
+      el("elementO").value = "O";
+    }
+
+    function ensureElementOption(selectId, symbol) {
+      if (!symbol) return;
+      const select = el(selectId);
+      if (![...select.options].some(option => option.value === symbol)) {
+        const option = document.createElement("option");
+        option.value = symbol;
+        option.textContent = `${symbol} · CIF`;
+        select.appendChild(option);
+      }
+      select.value = symbol;
+    }
+
+    function syncElementChannelsFromAtoms(atoms) {
+      const symbols = [...new Set(atoms.map(atom => atom.element).filter(Boolean))];
+      ensureElementOption("elementA", symbols[0]);
+      ensureElementOption("elementB", symbols[1] || symbols[0]);
+      ensureElementOption("elementO", symbols[2] || symbols.find(symbol => ["O", "F", "Cl", "S", "Br", "I"].includes(symbol)) || symbols[1] || symbols[0]);
+    }
+
+    function t(key) {
+      return i18n[state.lang][key] || i18n.en[key] || key;
+    }
+
+    function applyLanguage() {
+      document.documentElement.lang = state.lang === "zh" ? "zh-CN" : "en";
+      document.querySelectorAll("[data-i18n]").forEach(node => {
+        node.textContent = t(node.dataset.i18n);
+      });
+      el("langBtn").textContent = state.lang === "en" ? "中文" : "English";
+      renderPanels();
+    }
+
+    function roleElement(role) {
+      if (role === "A") return el("elementA").value;
+      if (role === "B") return el("elementB").value;
+      return el("elementO").value;
+    }
+
+    function roleSelectId(role) {
+      if (role === "A") return "elementA";
+      if (role === "B") return "elementB";
+      return "elementO";
+    }
+
+    function nextDifferentElement(current) {
+      const symbols = elements.map(([symbol]) => symbol);
+      const index = Math.max(0, symbols.indexOf(current));
+      return symbols[(index + 1) % symbols.length] === current ? symbols[(index + 2) % symbols.length] : symbols[(index + 1) % symbols.length];
+    }
+
+    function seededNoise(x, y, z, k) {
+      const n = Math.sin((x + 1) * 12.9898 + (y + 2) * 78.233 + (z + 3) * 37.719 + k * 19.19) * 43758.5453;
+      return n - Math.floor(n);
+    }
+
+    function rebuildCustomCrystal(messageKey = "generated") {
+      const baseAtoms = state.customBaseAtoms.length ? state.customBaseAtoms : state.atoms;
+      const cells = Number(el("cells").value);
+      const jitter = Number(el("jitter").value);
+      const vacancy = Number(el("vacancy").value);
+      const atoms = [];
+      for (let x = 0; x < cells; x++) {
+        for (let y = 0; y < cells; y++) {
+          for (let z = 0; z < cells; z++) {
+            baseAtoms.forEach((atom, index) => {
+              const seed = index + x * 101 + y * 1009 + z * 9173;
+              if (seededNoise(atom.f[0] * 97 + x, atom.f[1] * 89 + y, atom.f[2] * 83 + z, seed) < vacancy) return;
+              const ideal = [
+                (atom.ideal[0] + x) / cells,
+                (atom.ideal[1] + y) / cells,
+                (atom.ideal[2] + z) / cells
+              ];
+              const noise = [0, 1, 2].map(k => (seededNoise(atom.f[0] * 53 + x, atom.f[1] * 47 + y, atom.f[2] * 43 + z, seed + k + 11) - 0.5) * jitter / cells);
+              const f = ideal.map((v, i) => wrapFraction(v + noise[i]));
+              atoms.push({
+                ...atom,
+                id: atoms.length,
+                f,
+                ideal
+              });
+            });
+          }
+        }
+      }
+      state.atoms = atoms;
+      state.focusAtomId = state.atoms[0]?.id ?? null;
+      state.actionCount += 1;
+      pushStep(messageKey);
+      updateAll();
+    }
+
+    function refreshCustomFromBase(messageKey = "generated") {
+      if (!state.customBaseAtoms.length) return false;
+      rebuildCustomCrystal(messageKey);
+      return true;
+    }
+
+    function buildCrystal(messageKey = "generated") {
+      const preset = el("preset").value;
+      if (preset === "custom" && (state.customBaseAtoms.length || state.atoms.length)) {
+        rebuildCustomCrystal(messageKey);
+        return;
+      }
+      const n = Number(el("cells").value);
+      const jitter = Number(el("jitter").value);
+      const vacancy = Number(el("vacancy").value);
+      const atoms = [];
+      let index = 0;
+
+      for (let x = 0; x < n; x++) {
+        for (let y = 0; y < n; y++) {
+          for (let z = 0; z < n; z++) {
+            for (const site of bases[preset]) {
+              if (seededNoise(x, y, z, index) < vacancy) continue;
+              const noise = [0, 1, 2].map(k => (seededNoise(x, y, z, index + k + 7) - 0.5) * jitter);
+              const f = [
+                (x + site.f[0] + noise[0]) / n,
+                (y + site.f[1] + noise[1]) / n,
+                (z + site.f[2] + noise[2]) / n
+              ];
+              atoms.push({ id: index++, role: site.role, element: roleElement(site.role), f, ideal: [(x + site.f[0]) / n, (y + site.f[1]) / n, (z + site.f[2]) / n] });
+            }
+          }
+        }
+      }
+
+      state.atoms = atoms;
+      state.cifName = "";
+      state.cifAsuAtoms = 0;
+      state.cifSymmetryOps = 0;
+      state.customBaseAtoms = [];
+      if (el("cifFile")) el("cifFile").value = "";
+      state.actionCount += 1;
+      pushStep(messageKey);
+      updateAll();
+    }
+
+    function pushStep(messageKey) {
+      state.statusKey = messageKey;
+      state.steps.unshift({ n: state.actionCount, key: messageKey });
+      state.steps = state.steps.slice(0, 8);
+    }
+
+    function mutate() {
+      const actions = [perturbLattice, displaceAtom, createVacancy, insertAtom, replaceElement];
+      actions[Math.floor(Math.random() * actions.length)]();
+      state.actionCount += 1;
+      pushStep("mutated");
+      updateAll();
+    }
+
+    function cloneAtoms(atoms) {
+      return atoms.map(atom => ({
+        ...atom,
+        f: [...atom.f],
+        ideal: [...atom.ideal]
+      }));
+    }
+
+    function persistCustomAtoms() {
+      if (el("preset").value === "custom") {
+        if (!state.atoms.length && state.customBaseAtoms.length) return;
+        state.customBaseAtoms = cloneAtoms(state.atoms);
+      }
+    }
+
+    function perturbLattice() {
+      const input = el("lattice");
+      const next = Math.max(3, Math.min(7.5, Number(input.value) + (Math.random() - 0.5) * 0.8));
+      input.value = next.toFixed(1);
+      syncValues();
+    }
+
+    function displaceAtom() {
+      if (!state.atoms.length && !refreshCustomFromBase("generated")) return;
+      const atom = state.atoms[Math.floor(Math.random() * state.atoms.length)];
+      atom.f = atom.f.map(v => Math.max(0, Math.min(1, v + (Math.random() - 0.5) * 0.08)));
+    }
+
+    function createVacancy() {
+      if (!state.atoms.length && refreshCustomFromBase("generated")) return;
+      if (state.atoms.length > 2) {
+        state.atoms.splice(Math.floor(Math.random() * state.atoms.length), 1);
+        persistCustomAtoms();
+      }
+    }
+
+    function insertAtom() {
+      const candidates = ["Li", "Na", "Mg", "O", "Cl", "Si", "Ni"];
+      const n = Number(el("cells").value);
+      state.atoms.push({
+        id: Date.now(),
+        role: "A",
+        element: candidates[Math.floor(Math.random() * candidates.length)],
+        f: [Math.random(), Math.random(), Math.random()],
+        ideal: [Math.round(Math.random() * n) / n, Math.round(Math.random() * n) / n, Math.round(Math.random() * n) / n]
+      });
+      persistCustomAtoms();
+    }
+
+    function replaceElement() {
+      if (!state.atoms.length && !refreshCustomFromBase("generated")) return;
+      const roles = ["A", "B", "O"];
+      const role = roles.find(candidate => {
+        const current = state.atoms.find(atom => atom.role === candidate)?.element;
+        return current && current !== roleElement(candidate);
+      }) || roles[state.actionCount % roles.length];
+      let selected = roleElement(role);
+      const targetAtoms = state.atoms.filter(atom => atom.role === role);
+      const fallbackElement = state.atoms[0]?.element;
+      const atomsToReplace = targetAtoms.length ? targetAtoms : state.atoms.filter(atom => atom.element === fallbackElement);
+      const currentElement = atomsToReplace[0]?.element;
+      if (currentElement && selected === currentElement) {
+        selected = nextDifferentElement(currentElement);
+        ensureElementOption(roleSelectId(role), selected);
+      }
+      atomsToReplace.forEach(atom => {
+        atom.element = selected;
+        atom.role = role;
+      });
+      persistCustomAtoms();
+      state.actionCount += 1;
+      pushStep("replaced");
+      updateAll();
+    }
+
+    function relax() {
+      state.atoms.forEach(atom => {
+        atom.f = atom.f.map((v, i) => v * 0.35 + atom.ideal[i] * 0.65);
+      });
+      state.actionCount += 1;
+      pushStep("relaxed");
+      updateAll();
+    }
+
+    function runStep() {
+      mutate();
+      state.statusKey = "stepped";
+      if (state.steps[0]) state.steps[0].key = "stepped";
+      updateAll();
+    }
+
+    function counts() {
+      return state.atoms.reduce((acc, atom) => {
+        acc[atom.element] = (acc[atom.element] || 0) + 1;
+        return acc;
+      }, {});
+    }
+
+    function formula() {
+      return Object.entries(counts()).sort(([a], [b]) => a.localeCompare(b)).map(([s, n]) => `${s}${n}`).join(" ");
+    }
+
+    function pseudoEnergy() {
+      if (!state.atoms.length) return 0;
+      const lattice = Number(el("lattice").value);
+      const displacement = state.atoms.reduce((sum, atom) => {
+        const d = atom.f.reduce((s, v, i) => s + Math.abs(v - atom.ideal[i]), 0);
+        return sum + d;
+      }, 0) / state.atoms.length;
+      const chemistry = state.atoms.reduce((sum, atom) => sum + (atomicNumber[atom.element] || 20) * 0.002, 0) / state.atoms.length;
+      return -5.1 + Math.abs(lattice - 5.2) * 0.18 + displacement * 4.8 + chemistry;
+    }
+
+    function reward() {
+      const e = pseudoEnergy();
+      const diversity = Object.keys(counts()).length / 5;
+      const density = Math.min(1, state.atoms.length / Math.max(1, Number(el("cells").value) ** 3 * 4));
+      return Math.max(0, Math.min(1, 0.92 - (e + 5.1) * 0.16 + diversity * 0.12 + density * 0.06));
+    }
+
+    function ns(name) {
+      return document.createElementNS("http://www.w3.org/2000/svg", name);
+    }
+
+    function projectPoint(f, width, height, scaleBoost = 1) {
+      const lattice = Number(el("lattice").value);
+      let [x, y, z] = f.map(v => (v - 0.5) * lattice);
+      const cx = Math.cos(state.rotX), sx = Math.sin(state.rotX);
+      const cy = Math.cos(state.rotY), sy = Math.sin(state.rotY);
+      const y1 = y * cx - z * sx;
+      const z1 = y * sx + z * cx;
+      const x2 = x * cy + z1 * sy;
+      const z2 = -x * sy + z1 * cy;
+      const scale = Math.min(width, height) * 0.125 * scaleBoost;
+      return {
+        x: width / 2 + x2 * scale,
+        y: height / 2 + y1 * scale,
+        z: z2
+      };
+    }
+
+    function project(atom, width, height, scaleBoost = 1) {
+      const point = projectPoint(atom.f, width, height, scaleBoost);
+      const scale = Math.min(width, height) * 0.125 * scaleBoost;
+      return {
+        ...point,
+        r: Math.max(6, elementRadius(atom.element) * scale * 0.2)
+      };
+    }
+
+    function computeBonds(points) {
+      const bonds = [];
+      for (let i = 0; i < points.length; i++) {
+        for (let j = i + 1; j < points.length; j++) {
+          const dx = points[i].f[0] - points[j].f[0];
+          const dy = points[i].f[1] - points[j].f[1];
+          const dz = points[i].f[2] - points[j].f[2];
+          const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+          if (d > 0.02 && d < 0.24) bonds.push([i, j, d]);
+        }
+      }
+      return bonds.slice(0, 320);
+    }
+
+    function addDefs(svg) {
+      const defs = ns("defs");
+      defs.innerHTML = `
+        <filter id="atomShadow" x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.28"/>
+        </filter>
+        <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="6" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <radialGradient id="atomLight" cx="32%" cy="28%" r="68%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.72"/>
+          <stop offset="42%" stop-color="#ffffff" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="#000000" stop-opacity="0.18"/>
+        </radialGradient>
+      `;
+      svg.appendChild(defs);
+    }
+
+    function drawCell(svg, width, height, scaleBoost = 1) {
+      const corners = [
+        [0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0],
+        [0, 0, 1], [1, 0, 1], [1, 1, 1], [0, 1, 1]
+      ].map(f => projectPoint(f, width, height, scaleBoost));
+      const edges = [[0,1], [1,2], [2,3], [3,0], [4,5], [5,6], [6,7], [7,4], [0,4], [1,5], [2,6], [3,7]];
+      const group = ns("g");
+      group.setAttribute("stroke", "#475569");
+      group.setAttribute("stroke-width", "1.2");
+      group.setAttribute("stroke-opacity", "0.28");
+      group.setAttribute("fill", "none");
+      edges.forEach(([i, j]) => {
+        const line = ns("line");
+        line.setAttribute("x1", corners[i].x);
+        line.setAttribute("y1", corners[i].y);
+        line.setAttribute("x2", corners[j].x);
+        line.setAttribute("y2", corners[j].y);
+        group.appendChild(line);
+      });
+      svg.appendChild(group);
+    }
+
+    function drawAtom(svg, atom, projectedAtom, options = {}) {
+      const g = ns("g");
+      g.setAttribute("data-atom-id", String(atom.id));
+      g.style.cursor = "pointer";
+      const depth = Math.max(0.58, Math.min(1.22, 0.9 + projectedAtom.p.z * 0.08));
+      const radius = projectedAtom.p.r * depth * (options.atomScale || 1);
+      const base = ns("circle");
+      base.setAttribute("cx", projectedAtom.p.x);
+      base.setAttribute("cy", projectedAtom.p.y);
+      base.setAttribute("r", radius);
+      base.setAttribute("fill", elementColor(atom.element));
+      base.setAttribute("stroke", atom.id === state.focusAtomId ? "#111827" : "rgba(15, 23, 42, 0.34)");
+      base.setAttribute("stroke-width", atom.id === state.focusAtomId ? "2.5" : "1");
+      base.setAttribute("opacity", String(Math.max(0.74, Math.min(1, depth))));
+      base.setAttribute("filter", "url(#atomShadow)");
+      const shine = ns("circle");
+      shine.setAttribute("cx", projectedAtom.p.x - radius * 0.24);
+      shine.setAttribute("cy", projectedAtom.p.y - radius * 0.28);
+      shine.setAttribute("r", radius * 0.48);
+      shine.setAttribute("fill", "url(#atomLight)");
+      shine.setAttribute("pointer-events", "none");
+      g.appendChild(base);
+      g.appendChild(shine);
+      if (options.labels !== false && radius > 7) {
+        const text = ns("text");
+        text.setAttribute("x", projectedAtom.p.x);
+        text.setAttribute("y", projectedAtom.p.y + Math.max(3, radius * 0.18));
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("font-size", Math.max(9, Math.min(14, radius * 0.7)));
+        text.setAttribute("font-weight", "700");
+        text.setAttribute("fill", "#0f172a");
+        text.setAttribute("pointer-events", "none");
+        text.textContent = atom.element;
+        g.appendChild(text);
+      }
+      g.addEventListener("click", event => {
+        event.stopPropagation();
+        state.focusAtomId = atom.id;
+        updateAll();
+      });
+      svg.appendChild(g);
+    }
+
+    function renderScene(svg, atoms, options = {}) {
+      const box = svg.getBoundingClientRect();
+      const width = Math.max(260, box.width || options.width || 900);
+      const height = Math.max(220, box.height || options.height || 620);
+      const scaleBoost = options.scaleBoost || 1;
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      svg.innerHTML = "<title>Interactive crystal structure visualization</title>";
+      addDefs(svg);
+      if (options.cell !== false) drawCell(svg, width, height, scaleBoost);
+
+      const projected = atoms.map(atom => ({ ...atom, p: project(atom, width, height, scaleBoost) })).sort((a, b) => a.p.z - b.p.z);
+      const byId = new Map(projected.map(atom => [atom.id, atom]));
+      const sourceOrder = atoms.map(atom => ({ ...atom, p: project(atom, width, height, scaleBoost) }));
+      const bonds = computeBonds(sourceOrder);
+
+      const bondGroup = ns("g");
+      bondGroup.setAttribute("stroke", options.zoom ? "#64748b" : "#7b8a97");
+      bondGroup.setAttribute("stroke-width", options.zoom ? "2" : "1.35");
+      bondGroup.setAttribute("stroke-linecap", "round");
+      bondGroup.setAttribute("stroke-opacity", options.zoom ? "0.55" : "0.34");
+      bonds.forEach(([i, j]) => {
+        const a = byId.get(sourceOrder[i].id);
+        const b = byId.get(sourceOrder[j].id);
+        if (!a || !b) return;
+        const line = ns("line");
+        line.setAttribute("x1", a.p.x);
+        line.setAttribute("y1", a.p.y);
+        line.setAttribute("x2", b.p.x);
+        line.setAttribute("y2", b.p.y);
+        bondGroup.appendChild(line);
+      });
+      svg.appendChild(bondGroup);
+
+      projected.forEach(atom => {
+        drawAtom(svg, atom, atom, options);
+      });
+      return bonds;
+    }
+
+    function renderCrystal() {
+      state.bonds = renderScene(el("crystalSvg"), state.atoms, { labels: true });
+    }
+
+    function renderLocalZoom() {
+      const svg = el("zoomSvg");
+      if (!state.atoms.length) {
+        svg.innerHTML = "";
+        return;
+      }
+      const focus = state.atoms.find(atom => atom.id === state.focusAtomId) || state.atoms[Math.floor(state.atoms.length / 2)];
+      state.focusAtomId = focus.id;
+      const neighborhood = state.atoms
+        .map(atom => {
+          const d = Math.sqrt(atom.f.reduce((sum, v, i) => sum + (v - focus.f[i]) ** 2, 0));
+          return { atom, d };
+        })
+        .filter(item => item.d < 0.34)
+        .sort((a, b) => a.d - b.d)
+        .slice(0, 28)
+        .map(item => ({
+          ...item.atom,
+          f: item.atom.f.map((v, i) => 0.5 + (v - focus.f[i]) * 1.95)
+        }));
+      renderScene(svg, neighborhood, { zoom: true, scaleBoost: 1.65, atomScale: 1.15, labels: true, cell: false, width: 320, height: 220 });
+    }
+
+    function renderPanels() {
+      const c = counts();
+      const e = pseudoEnergy();
+      const r = reward();
+      el("formulaChip").textContent = formula() || "Empty";
+      el("energyChip").textContent = `E ${e.toFixed(2)} eV/atom`;
+      el("rewardChip").textContent = `${t("reward")} ${r.toFixed(2)}`;
+      el("atomsMetric").textContent = state.atoms.length;
+      el("bondsMetric").textContent = state.bonds.length;
+      el("energyMetric").textContent = e.toFixed(2);
+      el("rewardMetric").textContent = r.toFixed(2);
+      el("statusText").textContent = t(state.statusKey);
+      el("timeline").innerHTML = state.steps.map(step => `<span class="step-pill">#${step.n} ${t(step.key)}</span>`).join("");
+      el("legend").innerHTML = Object.entries(c).map(([symbol, n]) => `
+        <div class="legend-row">
+          <span class="swatch" style="background:${elementColor(symbol)}"></span>
+          <strong>${symbol}</strong>
+          <span>${n}</span>
+        </div>
+      `).join("");
+      el("observation").textContent = JSON.stringify(observation(), null, 2);
+    }
+
+    function observation() {
+      return {
+        formula: formula(),
+        source: state.cifName ? `CIF: ${state.cifName}` : el("preset").value,
+        lattice_constant: Number(el("lattice").value),
+        atoms: state.atoms.length,
+        elements: counts(),
+        cif_asu_atoms: state.cifAsuAtoms || undefined,
+        cif_symmetry_operations: state.cifSymmetryOps || undefined,
+        energy: Number(pseudoEnergy().toFixed(4)),
+        reward: Number(reward().toFixed(4)),
+        action_space: ["replace_element", "perturb_lattice", "displace_atom", "create_vacancy", "insert_atom"],
+        sample_atoms: state.atoms.slice(0, 8).map(atom => ({
+          element: atom.element,
+          fractional: atom.f.map(v => Number(v.toFixed(4)))
+        }))
+      };
+    }
+
+    function updateAll() {
+      renderCrystal();
+      renderLocalZoom();
+      renderPanels();
+    }
+
+    function syncValues() {
+      ["cells", "lattice", "jitter", "vacancy", "rotation"].forEach(id => {
+        const value = Number(el(id).value);
+        el(`${id}Value`).textContent = id === "cells" ? String(value) : value.toFixed(id === "lattice" || id === "rotation" ? 1 : 2);
+      });
+    }
+
+    function exportJson() {
+      const blob = new Blob([JSON.stringify(observation(), null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "svgy-crystal-observation.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      state.statusKey = "exported";
+      renderPanels();
+    }
+
+    function parseCifNumber(value) {
+      const cleaned = String(value || "").replace(/\(.+\)/, "").replace(/['"]/g, "");
+      const number = Number.parseFloat(cleaned);
+      return Number.isFinite(number) ? number : null;
+    }
+
+    function normalizeElement(value) {
+      const raw = String(value || "").replace(/['"]/g, "").trim();
+      const compact = raw.replace(/[^A-Za-z]/g, "");
+      if (!compact) return "X";
+      const candidates = [
+        compact.slice(0, 2).charAt(0).toUpperCase() + compact.slice(1, 2).toLowerCase(),
+        compact.slice(0, 1).toUpperCase()
+      ];
+      return candidates.find(symbol => periodicSymbols.has(symbol)) || candidates[1] || "X";
+    }
+
+    function splitCifRow(line) {
+      return (line.match(/'[^']*'|"[^"]*"|\S+/g) || []).map(token => token.replace(/^['"]|['"]$/g, ""));
+    }
+
+    function atomElementFromRow(row, symbolIndex, labelIndex) {
+      const direct = symbolIndex >= 0 ? normalizeElement(row[symbolIndex]) : "X";
+      if (direct !== "X") return direct;
+      const label = labelIndex >= 0 ? normalizeElement(row[labelIndex]) : "X";
+      if (label !== "X") return label;
+      for (const token of row) {
+        const symbol = normalizeElement(token);
+        if (symbol !== "X") return symbol;
+      }
+      return "X";
+    }
+
+    function wrapFraction(value) {
+      const wrapped = value - Math.floor(value);
+      return Math.abs(wrapped - 1) < 1e-8 || Math.abs(wrapped) < 1e-8 ? 0 : wrapped;
+    }
+
+    function parseFraction(value) {
+      const token = String(value || "").replace(/\*/g, "");
+      if (token.includes("/")) {
+        const [num, den] = token.split("/").map(Number);
+        return Number.isFinite(num) && Number.isFinite(den) && den !== 0 ? num / den : 0;
+      }
+      const number = Number(token);
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function evalSymmetryPart(expr, f) {
+      const variables = { x: f[0], y: f[1], z: f[2] };
+      const cleaned = String(expr || "").toLowerCase().replace(/\s+/g, "").replace(/-/g, "+-");
+      return cleaned.split("+").filter(Boolean).reduce((sum, term) => {
+        const variable = term.match(/[xyz]/)?.[0];
+        if (!variable) return sum + parseFraction(term);
+        const coefficientText = term.replace(variable, "").replace(/\*/g, "");
+        let coefficient = 1;
+        if (coefficientText === "-") coefficient = -1;
+        else if (coefficientText && coefficientText !== "+") coefficient = parseFraction(coefficientText);
+        return sum + coefficient * variables[variable];
+      }, 0);
+    }
+
+    function parseSymmetryOperation(operation) {
+      const parts = splitCifRow(String(operation).replace(/,/g, " , "))
+        .join("")
+        .replace(/^['"]|['"]$/g, "")
+        .split(",")
+        .map(part => part.trim());
+      if (parts.length !== 3) return null;
+      return f => parts.map(part => wrapFraction(evalSymmetryPart(part, f)));
+    }
+
+    function extractSymmetryOperations(lines) {
+      const operations = [];
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].toLowerCase() !== "loop_") continue;
+        const headers = [];
+        let j = i + 1;
+        while (j < lines.length && lines[j].startsWith("_")) {
+          headers.push(lines[j].toLowerCase());
+          j++;
+        }
+        const opIndex = headers.findIndex(header =>
+          header.includes("_space_group_symop_operation_xyz") ||
+          header.includes("_symmetry_equiv_pos_as_xyz")
+        );
+        if (opIndex < 0) continue;
+        while (j < lines.length && !lines[j].startsWith("_") && lines[j].toLowerCase() !== "loop_") {
+          const row = splitCifRow(lines[j]);
+          const opText = row.slice(opIndex).join(" ") || row[row.length - 1];
+          const op = parseSymmetryOperation(opText);
+          if (op) operations.push(op);
+          j++;
+        }
+      }
+      return operations.length ? operations : [f => f.map(wrapFraction)];
+    }
+
+    function expandSymmetry(asuAtoms, operations) {
+      const expanded = [];
+      const seen = new Set();
+      asuAtoms.forEach(atom => {
+        operations.forEach(op => {
+          const f = op(atom.f);
+          const key = `${atom.element}:${f.map(v => Math.round(v * 10000)).join(",")}`;
+          if (seen.has(key)) return;
+          seen.add(key);
+          expanded.push({
+            ...atom,
+            id: expanded.length,
+            f,
+            ideal: [...f]
+          });
+        });
+      });
+      return expanded;
+    }
+
+    function parseCif(text) {
+      const rawLines = text.split(/\r?\n/);
+      const lines = rawLines.map(line => line.trim()).filter(line => line && !line.startsWith("#"));
+      const cellA = parseCifNumber((text.match(/_cell_length_a\s+([^\s]+)/) || [])[1]) || Number(el("lattice").value);
+      const asuAtoms = [];
+      const operations = extractSymmetryOperations(lines);
+
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].toLowerCase() !== "loop_") continue;
+        const headers = [];
+        let j = i + 1;
+        while (j < lines.length && lines[j].startsWith("_")) {
+          headers.push(lines[j]);
+          j++;
+        }
+        const xIndex = headers.findIndex(header => header.toLowerCase().includes("_atom_site_fract_x"));
+        const yIndex = headers.findIndex(header => header.toLowerCase().includes("_atom_site_fract_y"));
+        const zIndex = headers.findIndex(header => header.toLowerCase().includes("_atom_site_fract_z"));
+        if (xIndex < 0 || yIndex < 0 || zIndex < 0) continue;
+        const symbolIndex = headers.findIndex(header => header.toLowerCase().includes("_atom_site_type_symbol"));
+        const labelIndex = headers.findIndex(header => header.toLowerCase().includes("_atom_site_label"));
+        const roleByElement = new Map();
+
+        while (j < lines.length && !lines[j].startsWith("_") && lines[j].toLowerCase() !== "loop_") {
+          const row = splitCifRow(lines[j]);
+          if (row.length >= headers.length) {
+            const f = [parseCifNumber(row[xIndex]), parseCifNumber(row[yIndex]), parseCifNumber(row[zIndex])];
+            if (f.every(Number.isFinite)) {
+              const element = atomElementFromRow(row, symbolIndex, labelIndex);
+              if (!roleByElement.has(element)) roleByElement.set(element, ["A", "B", "O"][roleByElement.size] || "A");
+              asuAtoms.push({
+                id: asuAtoms.length,
+                role: roleByElement.get(element),
+                element,
+                f: f.map(v => ((v % 1) + 1) % 1),
+                ideal: f.map(v => ((v % 1) + 1) % 1)
+              });
+            }
+          }
+          j++;
+        }
+        if (asuAtoms.length) break;
+      }
+
+      return {
+        atoms: expandSymmetry(asuAtoms, operations),
+        asuAtoms: asuAtoms.length,
+        symmetryOps: operations.length,
+        cellA
+      };
+    }
+
+    function loadCif(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const parsed = parseCif(String(reader.result || ""));
+        if (!parsed.atoms.length) {
+          state.statusKey = "cifError";
+          renderPanels();
+          return;
+        }
+        const loadedAtoms = parsed.atoms.slice(0, 500).map(atom => ({
+          ...atom,
+          f: [...atom.f],
+          ideal: [...atom.ideal]
+        }));
+        state.customBaseAtoms = loadedAtoms;
+        state.atoms = loadedAtoms.map(atom => ({
+          ...atom,
+          f: [...atom.f],
+          ideal: [...atom.ideal]
+        }));
+        state.cifAsuAtoms = parsed.asuAtoms;
+        state.cifSymmetryOps = parsed.symmetryOps;
+        state.cifName = file.name;
+        state.focusAtomId = state.atoms[0]?.id ?? null;
+        syncElementChannelsFromAtoms(loadedAtoms);
+        el("preset").value = "custom";
+        el("lattice").value = Math.max(3, Math.min(7.5, parsed.cellA)).toFixed(1);
+        syncValues();
+        rebuildCustomCrystal("cifLoaded");
+      };
+      reader.readAsText(file);
+    }
+
+    function animate() {
+      state.rotY += Number(el("rotation").value) * 0.004;
+      renderCrystal();
+      renderLocalZoom();
+      requestAnimationFrame(animate);
+    }
+
+    setupSelects();
+    function handleControlChange(id) {
+      syncValues();
+      if (id === "preset" && el("preset").value === "custom") updateAll();
+      else if (el("preset").value === "custom" && ["elementA", "elementB", "elementO"].includes(id)) renderPanels();
+      else if (["preset", "elementA", "elementB", "elementO", "cells", "jitter", "vacancy"].includes(id)) buildCrystal("generated");
+      else updateAll();
+    }
+    ["cells", "lattice", "jitter", "vacancy", "rotation"].forEach(id => {
+      el(id).addEventListener("input", () => handleControlChange(id));
+    });
+    ["preset", "elementA", "elementB", "elementO"].forEach(id => {
+      el(id).addEventListener("change", () => handleControlChange(id));
+    });
+    el("cifFile").addEventListener("click", event => {
+      event.target.value = "";
+    });
+    el("cifFile").addEventListener("change", event => loadCif(event.target.files[0]));
+    el("langBtn").addEventListener("click", () => {
+      state.lang = state.lang === "en" ? "zh" : "en";
+      applyLanguage();
+    });
+    el("generateBtn").addEventListener("click", () => buildCrystal("generated"));
+    el("mutateBtn").addEventListener("click", mutate);
+    el("stepBtn").addEventListener("click", runStep);
+    el("replaceBtn").addEventListener("click", replaceElement);
+    el("relaxBtn").addEventListener("click", relax);
+    el("insertBtn").addEventListener("click", () => {
+      insertAtom();
+      state.actionCount += 1;
+      pushStep("inserted");
+      updateAll();
+    });
+    el("resetBtn").addEventListener("click", () => {
+      el("preset").value = "nacl";
+      el("elementA").value = "Na";
+      el("elementB").value = "Cl";
+      el("elementO").value = "O";
+      el("cells").value = 3;
+      el("lattice").value = 5.2;
+      el("jitter").value = 0.05;
+      el("vacancy").value = 0;
+      el("rotation").value = 0.5;
+      state.cifName = "";
+      state.cifAsuAtoms = 0;
+      state.cifSymmetryOps = 0;
+      state.customBaseAtoms = [];
+      el("cifFile").value = "";
+      state.actionCount += 1;
+      syncValues();
+      buildCrystal("reset");
+    });
+    el("exportBtn").addEventListener("click", exportJson);
+
+    const viewport = el("viewport");
+    viewport.addEventListener("pointerdown", event => {
+      state.dragging = true;
+      state.pointer = [event.clientX, event.clientY];
+      viewport.setPointerCapture(event.pointerId);
+    });
+    viewport.addEventListener("pointermove", event => {
+      if (!state.dragging) return;
+      const dx = event.clientX - state.pointer[0];
+      const dy = event.clientY - state.pointer[1];
+      state.rotY += dx * 0.008;
+      state.rotX += dy * 0.008;
+      state.pointer = [event.clientX, event.clientY];
+      renderCrystal();
+    });
+    viewport.addEventListener("pointerup", () => state.dragging = false);
+    window.addEventListener("resize", updateAll);
+
+    syncValues();
+    applyLanguage();
+    buildCrystal("generated");
+    animate();
+  </script>
+</body>
+</html>

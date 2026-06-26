@@ -48,4 +48,8 @@ python -m sciverse_gym.benchmarks.bo_baselines.simple_bo --steps 5 --mlff-model 
 python -m sciverse_gym.benchmarks.rl_baselines.random_rollout --steps 5 --mlff-model sevennet
 ```
 
+## Crystal Playground
+
+`docs/crystal-playground.html`을 브라우저에서 직접 열면 영어/중국어 이중 언어 Crystal Playground를 로컬에서 실행할 수 있습니다. 서버나 추가 의존성이 필요 없습니다. 다양한 결정 프리셋 생성, CIF 파일 업로드와 대칭 연산을 통한 전체 단위격자 전개, 격자와 원자 변위 조정, 공공 추가, SVGym 스타일 편집 단계 실행, 로컬 확대 보기, 구조 완화, 관측 JSON 내보내기를 사용할 수 있습니다.
+
 자세한 내용은 [manual](manual.html), [repository](https://github.com/Bin-Cao/SciVerseGym), [paper](https://arxiv.org/abs/2606.22425)를 확인하세요.

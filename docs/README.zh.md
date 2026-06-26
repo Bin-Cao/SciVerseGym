@@ -66,6 +66,10 @@ obs, reward, terminated, truncated, info = env.step(action)
 
 ## 更多信息
 
+## 晶体可视化乐园
+
+直接用浏览器打开 `docs/crystal-playground.html`，即可体验中英文双语 SVGym 晶体可视化界面。它可以本地运行，不需要启动服务器或安装额外依赖。用户可以生成多种晶体预设、上传 CIF 文件并按对称操作展开为完整晶胞、调节晶格与原子位移、加入空位、执行 SVGym 风格编辑步进、查看局部放大图、弛豫结构，并导出当前观测 JSON。
+
 项目主页：[https://bin-cao.github.io/SciVerseGym/](https://bin-cao.github.io/SciVerseGym/)
 
 项目仓库：[https://github.com/Bin-Cao/SciVerseGym](https://github.com/Bin-Cao/SciVerseGym)

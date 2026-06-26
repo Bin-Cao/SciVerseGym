@@ -322,8 +322,9 @@
         <a href="#physics"><span data-lang="en">11. FE, Hull, Phonons</span><span data-lang="zh">11. 形成能、Hull、声子</span></a>
         <a href="#dataset"><span data-lang="en">12. Dataset</span><span data-lang="zh">12. 数据集</span></a>
         <a href="#api"><span data-lang="en">13. API Reference</span><span data-lang="zh">13. API 速查</span></a>
-        <a href="#troubleshooting"><span data-lang="en">14. Troubleshooting</span><span data-lang="zh">14. 常见问题</span></a>
-        <a href="#citation"><span data-lang="en">15. Citation</span><span data-lang="zh">15. 引用方式</span></a>
+        <a href="#playground"><span data-lang="en">14. Crystal Playground</span><span data-lang="zh">14. 晶体可视化界面</span></a>
+        <a href="#troubleshooting"><span data-lang="en">15. Troubleshooting</span><span data-lang="zh">15. 常见问题</span></a>
+        <a href="#citation"><span data-lang="en">16. Citation</span><span data-lang="zh">16. 引用方式</span></a>
       </nav>
     </aside>
 
@@ -667,8 +668,112 @@ env = gym.make(
         </table>
       </section>
 
+      <section id="playground">
+        <h2><span data-lang="en">14. Crystal Playground</span><span data-lang="zh">14. 晶体可视化界面</span></h2>
+        <p data-lang="en">
+          The file <code>docs/crystal-playground.html</code> is a standalone browser interface for exploring SVGym-style
+          crystal generation and edit actions without installing Python packages or starting a server. It is intended as
+          a visual entry point before running the Gymnasium environment in code.
+        </p>
+        <p data-lang="zh">
+          <code>docs/crystal-playground.html</code> 是一个可以直接在浏览器打开的本地晶体可视化界面，用来体验
+          SVGym 风格的晶体生成和编辑动作。它不需要安装 Python 包，也不需要启动服务器，适合在正式写
+          Gymnasium 代码前先理解结构、action 和 observation 的关系。
+        </p>
+
+        <h3><span data-lang="en">Open it from zero</span><span data-lang="zh">从零打开</span></h3>
+        <ol>
+          <li><span data-lang="en">Open the repository folder on your computer.</span><span data-lang="zh">在电脑上打开本项目文件夹。</span></li>
+          <li><span data-lang="en">Go to <code>docs/</code> and double-click <code>crystal-playground.html</code>.</span><span data-lang="zh">进入 <code>docs/</code> 目录，双击 <code>crystal-playground.html</code>。</span></li>
+          <li><span data-lang="en">Use the language button in the top-right area of the page to switch between English and Chinese.</span><span data-lang="zh">使用页面右上角的语言按钮在英文和中文之间切换。</span></li>
+          <li><span data-lang="en">No network, backend service, or build step is required.</span><span data-lang="zh">不需要网络、后端服务或构建步骤。</span></li>
+        </ol>
+
+        <h3><span data-lang="en">Generate a preset crystal</span><span data-lang="zh">生成预设晶体</span></h3>
+        <p data-lang="en">
+          In <strong>Structure preset</strong>, choose a template such as rocksalt, BCC, FCC, diamond, perovskite,
+          fluorite, rutile, or spinel. The three chemistry-channel selectors define which elements are placed on
+          the A, B, and C/anion sites for these presets.
+        </p>
+        <p data-lang="zh">
+          在 <strong>结构预设</strong> 中选择 rocksalt、BCC、FCC、diamond、perovskite、fluorite、rutile、
+          spinel 等模板。三个化学通道选择器用于决定预设结构中 A、B、C/阴离子位点放入哪些元素。
+        </p>
+        <table>
+          <thead>
+            <tr><th><span data-lang="en">Control</span><span data-lang="zh">控件</span></th><th><span data-lang="en">Meaning</span><span data-lang="zh">含义</span></th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>Channel A</code></td><td><span data-lang="en">Element for A-site atoms in presets and one possible replacement target.</span><span data-lang="zh">预设结构中 A 位点元素，也可作为替换动作的目标。</span></td></tr>
+            <tr><td><code>Channel B</code></td><td><span data-lang="en">Element for B-site atoms in presets and one possible replacement target.</span><span data-lang="zh">预设结构中 B 位点元素，也可作为替换动作的目标。</span></td></tr>
+            <tr><td><code>Channel C / anion</code></td><td><span data-lang="en">Element for anion or third-site atoms in presets and one possible replacement target.</span><span data-lang="zh">预设结构中的阴离子或第三类位点元素，也可作为替换动作的目标。</span></td></tr>
+            <tr><td><code>Supercell size</code></td><td><span data-lang="en">Replicates the unit cell as 1x1x1 through 4x4x4.</span><span data-lang="zh">把晶胞复制成 1x1x1 到 4x4x4 的超胞。</span></td></tr>
+            <tr><td><code>Lattice constant</code></td><td><span data-lang="en">Changes the visual lattice scale and the toy energy score.</span><span data-lang="zh">改变可视化晶格尺度，并影响界面中的玩具能量分数。</span></td></tr>
+          </tbody>
+        </table>
+
+        <h3><span data-lang="en">Upload a CIF file</span><span data-lang="zh">上传 CIF 文件</span></h3>
+        <p data-lang="en">
+          Click <strong>Upload CIF</strong> and choose a local <code>.cif</code> file. The playground reads fractional
+          atom coordinates, detects element symbols from <code>_atom_site_type_symbol</code> or labels, expands common
+          symmetry-operation loops into the full unit cell, and then applies the current supercell size.
+        </p>
+        <p data-lang="zh">
+          点击 <strong>上传 CIF</strong> 并选择本地 <code>.cif</code> 文件。界面会读取原子分数坐标，从
+          <code>_atom_site_type_symbol</code> 或 label 中识别元素，读取常见对称操作并展开为完整晶胞，
+          然后再按照当前超胞尺寸复制。
+        </p>
+        <div class="note">
+          <p data-lang="en">
+            If a CIF does not contain symmetry operations, the interface shows the atom sites provided by the file.
+            The exported observation includes <code>cif_asu_atoms</code> and <code>cif_symmetry_operations</code> so you can
+            confirm whether expansion happened.
+          </p>
+          <p data-lang="zh">
+            如果 CIF 文件没有提供对称操作，界面会显示文件中给出的原子位点。导出的 observation 中包含
+            <code>cif_asu_atoms</code> 和 <code>cif_symmetry_operations</code>，可用于确认是否完成对称展开。
+          </p>
+        </div>
+
+        <h3><span data-lang="en">Use the action buttons</span><span data-lang="zh">使用 action 按钮</span></h3>
+        <table>
+          <thead>
+            <tr><th><span data-lang="en">Action</span><span data-lang="zh">动作</span></th><th><span data-lang="en">What it does</span><span data-lang="zh">作用</span></th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>SVGym step</code></td><td><span data-lang="en">Runs one random SVGym-style edit and updates observation, reward, and structure.</span><span data-lang="zh">执行一步 SVGym 风格随机编辑，并更新 observation、reward 和结构。</span></td></tr>
+            <tr><td><code>Generate</code></td><td><span data-lang="en">Rebuilds the current preset or uploaded CIF view using the current sliders.</span><span data-lang="zh">根据当前滑块重新生成预设结构或已上传 CIF 结构。</span></td></tr>
+            <tr><td><code>Random mutate</code></td><td><span data-lang="en">Applies one random edit: lattice perturbation, atom displacement, vacancy, insertion, or replacement.</span><span data-lang="zh">随机执行晶格扰动、原子位移、空位、插入或元素替换。</span></td></tr>
+            <tr><td><code>Replace element</code></td><td><span data-lang="en">Replaces one chemistry channel or detected element group using the A/B/C selectors.</span><span data-lang="zh">使用 A/B/C 选择器替换一个化学通道或检测到的元素组。</span></td></tr>
+            <tr><td><code>Relax</code></td><td><span data-lang="en">Moves atoms toward ideal fractional sites and lowers the toy energy score.</span><span data-lang="zh">让原子向理想分数坐标回退，并降低界面中的玩具能量分数。</span></td></tr>
+            <tr><td><code>Insert atom</code></td><td><span data-lang="en">Adds a new atom at an open random fractional position.</span><span data-lang="zh">在随机开放分数坐标位置插入一个新原子。</span></td></tr>
+          </tbody>
+        </table>
+
+        <h3><span data-lang="en">Read the display</span><span data-lang="zh">阅读界面信息</span></h3>
+        <ul>
+          <li><span data-lang="en">Drag the main crystal view to rotate the structure manually.</span><span data-lang="zh">拖动主晶体视图可以手动旋转结构。</span></li>
+          <li><span data-lang="en">Click an atom to focus the local zoom view on its neighborhood.</span><span data-lang="zh">点击某个原子，右侧局部放大图会聚焦它的邻域。</span></li>
+          <li><span data-lang="en">The top chips show formula, toy energy, and reward for quick feedback.</span><span data-lang="zh">顶部标签显示化学式、玩具能量和 reward，用于快速反馈。</span></li>
+          <li><span data-lang="en">The element legend confirms whether CIF elements were detected as separate species.</span><span data-lang="zh">元素图例可以确认 CIF 中的元素是否被识别成不同种类。</span></li>
+          <li><span data-lang="en">The observation panel shows a JSON-like state snapshot similar to what an environment returns.</span><span data-lang="zh">Observation 面板展示类似环境返回值的 JSON 状态快照。</span></li>
+        </ul>
+
+        <h3><span data-lang="en">Export and limitations</span><span data-lang="zh">导出与限制</span></h3>
+        <p data-lang="en">
+          Use <strong>Export JSON</strong> to save the current visual observation. The playground is a teaching and
+          exploration interface: its energy and reward values are lightweight toy scores, not MLFF calculations.
+          For real optimization, use the Python environment and MLFF backends described in earlier sections.
+        </p>
+        <p data-lang="zh">
+          使用 <strong>导出 JSON</strong> 可以保存当前可视化 observation。该界面是教学和探索工具，其中能量与
+          reward 是轻量玩具分数，不是 MLFF 真实计算。真正的优化任务请使用前面章节介绍的 Python 环境和
+          MLFF 后端。
+        </p>
+      </section>
+
       <section id="troubleshooting">
-        <h2><span data-lang="en">14. Troubleshooting</span><span data-lang="zh">14. 常见问题</span></h2>
+        <h2><span data-lang="en">15. Troubleshooting</span><span data-lang="zh">15. 常见问题</span></h2>
         <ul>
           <li><span data-lang="en">If <code>energy_above_hull</code> is <code>None</code>, build a same-force-field reference calculator.</span><span data-lang="zh">如果 <code>energy_above_hull</code> 是 <code>None</code>，需要构建同力场 reference calculator。</span></li>
           <li><span data-lang="en">If <code>formation_energy_per_atom</code> is <code>None</code>, an elemental reference is missing.</span><span data-lang="zh">如果 <code>formation_energy_per_atom</code> 是 <code>None</code>，说明缺少元素 reference。</span></li>
@@ -678,7 +783,7 @@ env = gym.make(
       </section>
 
       <section id="citation">
-        <h2><span data-lang="en">15. Citation</span><span data-lang="zh">15. 引用方式</span></h2>
+        <h2><span data-lang="en">16. Citation</span><span data-lang="zh">16. 引用方式</span></h2>
         <p data-lang="en">If you use SVGym (SciVerseGym), please cite:</p>
         <p data-lang="zh">如果你使用 SVGym (SciVerseGym)，请引用：</p>
         <pre><code class="language-bibtex">@misc{cao2026svgymsciversegymenvironmentreinforcement,
