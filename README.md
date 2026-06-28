@@ -21,6 +21,8 @@
 </div>
 
 ---
+<img width="500" alt="Screenshot 2026-06-28 at 18 56 31" src="https://github.com/user-attachments/assets/18f81f82-d66a-4943-9d93-6e32a9f43488" />
+
 
 SciVerseGym (SVGym) is a Gymnasium-style environment for crystal-structure discovery. Agents submit structured crystal-edit actions, and the environment returns the standard Gymnasium step tuple:
 
